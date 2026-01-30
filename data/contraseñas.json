@@ -1,0 +1,19 @@
+{
+  "usuarios": [
+    {"usuario": "usuario1", "password": "contraseña1", "archivo": "usuario1.json"},
+    {"usuario": "usuario2", "password": "contraseña2", "archivo": "usuario2.json"},
+    {"usuario": "usuario3", "password": "contraseña3", "archivo": "usuario3.json"},
+    {"usuario": "usuario4", "password": "contraseña4", "archivo": "usuario4.json"},
+    {"usuario": "usuario5", "password": "contraseña5", "archivo": "usuario5.json"},
+    {"usuario": "usuario6", "password": "contraseña6", "archivo": "usuario6.json"},
+    {"usuario": "usuario7", "password": "contraseña7", "archivo": "usuario7.json"},
+    {"usuario": "usuario8", "password": "contraseña8", "archivo": "usuario8.json"},
+    {"usuario": "usuario9", "password": "contraseña9", "archivo": "usuario9.json"},
+    {"usuario": "usuario10", "password": "contraseña10", "archivo": "usuario10.json"},
+    {"usuario": "usuario11", "password": "contraseña11", "archivo": "usuario11.json"},
+    {"usuario": "usuario12", "password": "contraseña12", "archivo": "usuario12.json"},
+    {"usuario": "usuario13", "password": "contraseña13", "archivo": "usuario13.json"},
+    {"usuario": "usuario14", "password": "contraseña14", "archivo": "usuario14.json"},
+    {"usuario": "usuario15", "password": "contraseña15", "archivo": "usuario15.json"}
+  ]
+}
