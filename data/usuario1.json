@@ -1,0 +1,16 @@
+{
+  "usuario": "usuario1",
+  "planillas": [
+    {
+      "mes": "Enero-2024",
+      "cliente": "EMPRESA ABC S.A.",
+      "dias": [
+        {"dia": 1, "ingreso": "08:00", "salida": "17:00"},
+        {"dia": 2, "ingreso": "08:30", "salida": "18:00"},
+        {"dia": 3, "ingreso": "", "salida": ""},
+        {"dia": 4, "ingreso": "07:00", "salida": "16:00"},
+        {"dia": 5, "ingreso": "09:00", "salida": "18:00"}
+      ]
+    }
+  ]
+}
