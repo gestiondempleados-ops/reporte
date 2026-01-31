@@ -3,484 +3,982 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Horarios - Vigilantes</title>
+    <title>Horarios Vigilantes | BRAND SEGURIDAD</title>
     <style>
+        /* Reset y variables */
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
         }
 
         body {
-            background: #f0f2f5;
-            padding: 10px;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 20px;
+            color: var(--dark);
+            line-height: 1.6;
         }
 
-        .container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 100%;
+        .app-container {
             max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             overflow: hidden;
+            min-height: 90vh;
         }
 
-        .header {
-            background: #2c3e50;
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 15px;
+            padding: 25px 20px;
             text-align: center;
+            position: relative;
         }
 
-        .header h1 {
-            font-size: 18px;
+        .app-header h1 {
+            font-size: 22px;
+            font-weight: 700;
             margin-bottom: 5px;
+            letter-spacing: 0.5px;
         }
 
-        .content {
-            padding: 15px;
+        .app-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 300;
         }
 
-        /* Login */
-        .login-screen {
+        .user-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Main content */
+        .app-content {
+            padding: 0;
+            position: relative;
+            min-height: calc(90vh - 130px);
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            height: 100%;
+        }
+
+        .screen.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
 
-        .login-form {
-            width: 100%;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Login screen */
+        .login-screen {
+            padding: 40px 30px;
+        }
+
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .brand-logo i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: block;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
-            margin-bottom: 5px;
-            color: #333;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
         }
 
-        .form-group input, .form-group select {
+        .form-control {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
             font-size: 16px;
+            transition: var(--transition);
+            background: white;
         }
 
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        /* Button styles */
         .btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
+            display: block;
             width: 100%;
-            margin-top: 10px;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
         }
 
         .btn-secondary {
-            background: #7f8c8d;
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid #e0e0e0;
         }
 
-        .message {
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-            display: none;
-        }
-
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        /* Dashboard */
-        .dashboard-screen {
-            display: none;
-        }
-
-        .user-info {
-            background: #ecf0f1;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-
-        .logout-btn {
-            background: #e74c3c;
+        .btn-danger {
+            background: var(--danger);
             color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 14px;
+            width: auto;
+        }
+
+        /* Dashboard screen */
+        .dashboard-screen {
+            padding: 25px;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, #f6f9ff 0%, #f0f4ff 100%);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .welcome-section h2 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        .stat-card i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .stat-card h4 {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card p {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
         .action-card {
             background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
+            border-radius: 12px;
+            padding: 25px 15px;
             text-align: center;
-        }
-
-        /* Mes selector */
-        .mes-selector {
-            background: #ecf0f1;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-
-        /* Calendar simplificado */
-        .calendar-simple {
-            margin: 15px 0;
-        }
-
-        .day-item {
-            padding: 10px;
-            margin-bottom: 5px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
             cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.15);
+        }
+
+        .action-card i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .action-card h3 {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .action-card p {
+            font-size: 12px;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        /* Calendar screen */
+        .calendar-screen {
+            padding: 20px;
+        }
+
+        .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
         }
 
-        .day-item.registrado {
-            background: #d4edda;
-            border-color: #28a745;
+        .calendar-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
         }
 
-        .day-item.sin-registro {
-            background: #f8d7da;
-            border-color: #dc3545;
+        .calendar-title span {
+            color: var(--primary);
         }
 
-        .day-info {
-            flex: 1;
+        /* Calendar grid - Horizontal 3xN */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .calendar-day {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid #f0f0f0;
+            position: relative;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .calendar-day:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .calendar-day.registered {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-color: var(--success);
+        }
+
+        .calendar-day.empty {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-color: var(--danger);
         }
 
         .day-number {
-            font-weight: bold;
-            font-size: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .day-name {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
         .day-status {
-            font-size: 12px;
-            margin-top: 2px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 5px;
         }
 
-        .day-horas {
-            font-size: 14px;
-            font-weight: bold;
-            color: #2c3e50;
+        .registered .day-status {
+            background: var(--success);
+            color: white;
+        }
+
+        .empty .day-status {
+            background: var(--danger);
+            color: white;
+        }
+
+        .day-hours {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Month selector */
+        .month-selector {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .selector-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
         /* Modal */
-        .modal {
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto;
+            backdrop-filter: blur(5px);
         }
 
-        .modal-content {
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal {
             background: white;
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: var(--border-radius);
             width: 100%;
             max-width: 400px;
-            margin: 0 auto;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--box-shadow);
+            animation: slideUp 0.3s ease;
         }
 
-        .close-modal {
-            float: right;
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 25px 25px 15px;
+            border-bottom: 2px solid #f0f0f0;
+            position: relative;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--gray);
             cursor: pointer;
-            font-size: 20px;
-            color: #666;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
         }
 
-        /* Selector de horas - horizontal */
-        .horas-selector {
+        .modal-close:hover {
+            background: #f8f9fa;
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        /* Time selector */
+        .time-selector {
+            margin: 20px 0;
+        }
+
+        .time-selector h4 {
+            font-size: 14px;
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .hours-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 5px;
-            margin: 10px 0;
+            gap: 8px;
         }
 
-        .hora-btn {
-            padding: 8px 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .hour-btn {
+            padding: 10px 5px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             background: white;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 12px;
+            transition: var(--transition);
             text-align: center;
-            transition: all 0.3s;
         }
 
-        .hora-btn:hover {
-            background: #f0f0f0;
+        .hour-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
 
-        .hora-btn.selected {
-            background: #3498db;
+        .hour-btn.selected {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            border-color: #3498db;
+            border-color: var(--primary);
         }
 
-        /* Selector de fecha */
-        .fecha-selector {
-            margin: 15px 0;
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 25px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f6f9ff 0%, #f0f4ff 100%);
+            border-radius: 10px;
+        }
+
+        .time-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .time-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .time-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .total-hours {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* Turno nocturno alert */
+        .night-shift-alert {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border: 2px solid #ff9800;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
             text-align: center;
         }
 
-        .fecha-actual {
-            font-size: 16px;
-            font-weight: bold;
-            color: #2c3e50;
+        .night-shift-alert i {
+            color: #ff9800;
+            font-size: 20px;
             margin-bottom: 10px;
-            padding: 10px;
-            background: #ecf0f1;
-            border-radius: 4px;
+            display: block;
         }
 
-        /* Tabla de planilla */
-        .planilla-table {
+        .night-shift-alert p {
+            color: #e65100;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Table screen */
+        .table-screen {
+            padding: 25px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+        }
+
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .data-table th {
+            padding: 15px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
             font-size: 14px;
         }
 
-        .planilla-table th {
-            background: #2c3e50;
-            color: white;
-            padding: 8px;
-            text-align: left;
+        .data-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: var(--transition);
         }
 
-        .planilla-table td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
         }
 
-        .planilla-table tr:nth-child(even) {
-            background: #f9f9f9;
+        .data-table td {
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        .data-table .day-cell {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .data-table .ingreso-cell {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .data-table .salida-cell {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .data-table .horas-cell {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Messages */
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .message.info {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+            border: 2px solid #17a2b8;
+        }
+
+        /* Bottom navigation */
+        .bottom-nav {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 2px solid #f0f0f0;
+            padding: 15px 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .app-container {
+                max-width: 100%;
+                min-height: 95vh;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .hours-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .calendar-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .hours-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <div class="app-container">
         <!-- Header -->
-        <div class="header">
-            <h1>Registro de Horarios</h1>
-            <p>BRAND SEGURIDAD LTDA.</p>
+        <div class="app-header">
+            <h1>BRAND SEGURIDAD LTDA.</h1>
+            <p>Sistema de Registro de Horarios</p>
+            <div id="userBadge" class="user-badge" style="display: none;"></div>
         </div>
 
-        <!-- Contenido -->
-        <div class="content">
-            <!-- Login -->
-            <div id="loginScreen" class="login-screen">
-                <div class="login-form">
-                    <h2 style="margin-bottom: 20px; text-align: center;">Iniciar Sesión</h2>
+        <!-- Main Content -->
+        <div class="app-content">
+            <!-- Login Screen -->
+            <div id="loginScreen" class="screen active">
+                <div class="login-screen">
+                    <div class="brand-logo">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    
+                    <h2 style="text-align: center; margin-bottom: 30px; color: var(--dark);">
+                        Iniciar Sesión
+                    </h2>
                     
                     <div class="form-group">
-                        <label>Usuario</label>
-                        <input type="text" id="username" placeholder="usuario1 a usuario15">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" id="username" class="form-control" placeholder="usuario1 a usuario15">
                     </div>
 
                     <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" id="password" placeholder="contraseña1 a contraseña15">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="password" class="form-control" placeholder="contraseña1 a contraseña15">
                     </div>
 
-                    <button onclick="login()" class="btn">Ingresar</button>
+                    <button onclick="login()" class="btn btn-primary" style="margin-top: 30px;">
+                        <i class="fas fa-sign-in-alt"></i> Ingresar al Sistema
+                    </button>
                     
-                    <div id="loginMessage" class="message error"></div>
+                    <div id="loginMessage" class="message error" style="margin-top: 20px;"></div>
+                    
+                    <div style="margin-top: 30px; padding: 20px; background: var(--light); border-radius: 10px; text-align: center;">
+                        <p style="font-size: 13px; color: var(--gray); margin: 0;">
+                            <strong>Sistema para vigilantes</strong><br>
+                            Registro de turnos diurnos y nocturnos
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Dashboard -->
-            <div id="dashboardScreen" class="dashboard-screen">
-                <div class="user-info">
-                    <h3>Vigilante: <span id="currentUser"></span></h3>
-                    <p>Enero 2026</p>
-                </div>
+            <!-- Dashboard Screen -->
+            <div id="dashboardScreen" class="screen">
+                <div class="dashboard-screen">
+                    <div class="welcome-section">
+                        <h2>Bienvenido, <span id="currentUser">Usuario</span></h2>
+                        <p style="color: var(--gray);">Enero 2026 - Sistema activo</p>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <i class="fas fa-calendar-check"></i>
+                                <h4>Días Trabajados</h4>
+                                <p id="diasTrabajados">0</p>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-clock"></i>
+                                <h4>Horas Totales</h4>
+                                <p id="horasTotales">0h</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="action-card" onclick="showRegistro()">
-                    <h3>Registrar Turno</h3>
-                    <p>Ingresar horas de trabajo</p>
-                </div>
+                    <div class="action-grid">
+                        <div class="action-card" onclick="showScreen('registroScreen')">
+                            <i class="fas fa-calendar-plus"></i>
+                            <h3>Registrar Turno</h3>
+                            <p>Ingresa tus horas de trabajo</p>
+                        </div>
 
-                <div class="action-card" onclick="showVisualizacion()">
-                    <h3>Ver Planilla</h3>
-                    <p>Consultar registros</p>
-                </div>
+                        <div class="action-card" onclick="showScreen('tablaScreen')">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Ver Planilla</h3>
+                            <p>Consulta tus registros</p>
+                        </div>
+                    </div>
 
-                <button onclick="logout()" class="logout-btn">Cerrar Sesión</button>
+                    <button onclick="logout()" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </div>
             </div>
 
-            <!-- Registro -->
-            <div id="registroScreen" class="registro-screen" style="display: none;">
-                <button onclick="showDashboard()" class="btn btn-secondary" style="margin-bottom: 15px;">
-                    ← Volver
-                </button>
-
-                <div class="mes-selector">
-                    <h3>Configurar Mes</h3>
-                    <div class="form-group">
-                        <label>Mes</label>
-                        <select id="selectMes">
-                            <option value="01">Enero</option>
-                            <option value="02">Febrero</option>
-                            <option value="03">Marzo</option>
-                            <option value="04">Abril</option>
-                            <option value="05">Mayo</option>
-                            <option value="06">Junio</option>
-                            <option value="07">Julio</option>
-                            <option value="08">Agosto</option>
-                            <option value="09">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
-                        </select>
+            <!-- Calendar Screen -->
+            <div id="registroScreen" class="screen">
+                <div class="calendar-screen">
+                    <div class="calendar-header">
+                        <h3 class="calendar-title">Registrar Horarios</h3>
+                        <button onclick="showScreen('dashboardScreen')" class="btn btn-secondary btn-small">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
                     </div>
 
-                    <div class="form-group">
-                        <label>Año</label>
-                        <input type="number" id="selectAnio" value="2026">
+                    <div class="month-selector">
+                        <h4 style="margin-bottom: 15px; color: var(--dark);">Configurar Mes</h4>
+                        <div class="selector-row">
+                            <div class="form-group">
+                                <label class="form-label">Mes</label>
+                                <select id="selectMes" class="form-control">
+                                    <option value="01">Enero</option>
+                                    <option value="02">Febrero</option>
+                                    <option value="03">Marzo</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Mayo</option>
+                                    <option value="06">Junio</option>
+                                    <option value="07">Julio</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Año</label>
+                                <input type="number" id="selectAnio" class="form-control" value="2026" min="2024" max="2030">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Cliente</label>
+                            <input type="text" id="inputCliente" class="form-control" placeholder="Nombre del cliente">
+                        </div>
+
+                        <button onclick="cargarMes()" class="btn btn-primary" style="margin-top: 10px;">
+                            <i class="fas fa-sync-alt"></i> Cargar Mes
+                        </button>
                     </div>
 
-                    <div class="form-group">
-                        <label>Cliente</label>
-                        <input type="text" id="inputCliente" placeholder="Nombre del cliente">
+                    <h4 id="calendarTitle" style="margin-bottom: 15px; color: var(--dark);">Selecciona un día:</h4>
+                    
+                    <div id="calendarContainer" class="calendar-grid">
+                        <!-- Calendar days will be loaded here -->
                     </div>
 
-                    <button onclick="cargarMes()" class="btn">Cargar Mes</button>
+                    <div id="registroMessage" class="message" style="margin-top: 20px;"></div>
                 </div>
-
-                <div id="calendarContainer" class="calendar-simple">
-                    <!-- Días se cargan aquí -->
-                </div>
-
-                <div id="registroMessage" class="message"></div>
             </div>
 
-            <!-- Visualización -->
-            <div id="visualizacionScreen" class="visualizacion-screen" style="display: none;">
-                <button onclick="showDashboard()" class="btn btn-secondary" style="margin-bottom: 15px;">
-                    ← Volver
-                </button>
-
-                <h3>Planilla de Horarios</h3>
-                
-                <div class="mes-selector">
-                    <div class="form-group">
-                        <label>Mes</label>
-                        <select id="verMes">
-                            <option value="01">Enero</option>
-                            <option value="02">Febrero</option>
-                            <option value="03">Marzo</option>
-                            <option value="04">Abril</option>
-                            <option value="05">Mayo</option>
-                            <option value="06">Junio</option>
-                            <option value="07">Julio</option>
-                            <option value="08">Agosto</option>
-                            <option value="09">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
-                        </select>
+            <!-- Table Screen -->
+            <div id="tablaScreen" class="screen">
+                <div class="table-screen">
+                    <div class="calendar-header">
+                        <h3 class="calendar-title">Planilla de Horarios</h3>
+                        <button onclick="showScreen('dashboardScreen')" class="btn btn-secondary btn-small">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
                     </div>
 
-                    <div class="form-group">
-                        <label>Año</label>
-                        <input type="number" id="verAnio" value="2026">
+                    <div class="month-selector">
+                        <div class="selector-row">
+                            <div class="form-group">
+                                <label class="form-label">Mes</label>
+                                <select id="verMes" class="form-control">
+                                    <option value="01">Enero</option>
+                                    <option value="02">Febrero</option>
+                                    <option value="03">Marzo</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Mayo</option>
+                                    <option value="06">Junio</option>
+                                    <option value="07">Julio</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Año</label>
+                                <input type="number" id="verAnio" class="form-control" value="2026" min="2024" max="2030">
+                            </div>
+                        </div>
+
+                        <button onclick="cargarPlanilla()" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Ver Planilla
+                        </button>
                     </div>
 
-                    <button onclick="cargarPlanilla()" class="btn">Ver Planilla</button>
-                </div>
-
-                <div id="planillaContainer">
-                    <!-- Planilla se carga aquí -->
+                    <div id="planillaContainer">
+                        <!-- Table will be loaded here -->
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modal para registro diario -->
-    <div id="registroModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="cerrarModal()">×</span>
-            <h3 id="modalTitle">Registrar Horario</h3>
-            
-            <div class="fecha-selector">
-                <div class="fecha-actual" id="fechaActualModal">
-                    Día 1 - Enero 2026
+        <!-- Modal for time selection -->
+        <div id="modalOverlay" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Registrar Horario</h3>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="fecha-selector" style="text-align: center; margin-bottom: 25px;">
+                        <h4 id="fechaModal" style="color: var(--dark); font-size: 18px; font-weight: 700;"></h4>
+                        <p id="infoFecha" style="color: var(--gray); font-size: 14px; margin-top: 5px;"></p>
+                    </div>
+
+                    <div class="time-selector">
+                        <h4>Hora de Ingreso</h4>
+                        <div class="hours-grid" id="ingresoSelector">
+                            <!-- Hour buttons will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="time-selector">
+                        <h4>Hora de Salida</h4>
+                        <div class="hours-grid" id="salidaSelector">
+                            <!-- Hour buttons will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div id="nightShiftAlert" class="night-shift-alert" style="display: none;">
+                        <i class="fas fa-moon"></i>
+                        <p>Turno nocturno - Salida del día siguiente</p>
+                    </div>
+
+                    <div class="time-display">
+                        <div class="time-item">
+                            <div class="time-label">Ingreso</div>
+                            <div class="time-value" id="displayIngreso">--:--</div>
+                        </div>
+                        <div class="total-hours" id="totalHoras">0h</div>
+                        <div class="time-item">
+                            <div class="time-label">Salida</div>
+                            <div class="time-value" id="displaySalida">--:--</div>
+                        </div>
+                    </div>
+
+                    <div id="modalMessage" class="message" style="display: none;"></div>
+
+                    <div class="bottom-nav">
+                        <button onclick="limpiarRegistro()" class="btn btn-secondary">
+                            <i class="fas fa-trash-alt"></i> Limpiar
+                        </button>
+                        <button onclick="guardarRegistro()" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </div>
                 </div>
             </div>
-
-            <div style="margin: 20px 0;">
-                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Hora de Ingreso</label>
-                <div class="horas-selector" id="ingresoSelector">
-                    <!-- Horas se cargan aquí -->
-                </div>
-            </div>
-
-            <div style="margin: 20px 0;">
-                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Hora de Salida</label>
-                <div class="horas-selector" id="salidaSelector">
-                    <!-- Horas se cargan aquí -->
-                </div>
-            </div>
-
-            <div id="turnoNocturnoAlert" style="margin: 15px 0; padding: 10px; background: #e3f2fd; border-radius: 4px; border: 1px solid #bbdefb; display: none;">
-                <p style="margin: 0; font-size: 14px; color: #1565c0;">
-                    <i class="fas fa-moon"></i> Turno nocturno: Salida del día siguiente
-                </p>
-            </div>
-
-            <div id="horasCalculadas" style="margin: 15px 0; padding: 12px; background: #f5f5f5; border-radius: 4px; text-align: center;">
-                <p style="font-weight: bold; color: #2c3e50;">Horas totales: <span id="totalHoras">0</span>h</p>
-            </div>
-
-            <div id="modalMessage" class="message" style="display: none;"></div>
-
-            <button onclick="guardarRegistro()" class="btn">Guardar</button>
-            <button onclick="limpiarRegistro()" class="btn btn-secondary" style="margin-top: 10px;">Limpiar</button>
         </div>
     </div>
 
     <script>
-        // Configuración
+        // ===== CONFIGURACIÓN =====
         const usuariosDB = {
             'usuario1': 'contraseña1',
             'usuario2': 'contraseña2',
@@ -505,6 +1003,11 @@
             "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
         ];
 
+        const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        // Variables globales
         let usuarioActual = null;
         let datosUsuario = null;
         let mesActual = "01";
@@ -514,134 +1017,163 @@
         let horaIngresoSeleccionada = null;
         let horaSalidaSeleccionada = null;
 
-        // Funciones principales
+        // ===== FUNCIONES PRINCIPALES =====
         function login() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const message = document.getElementById('loginMessage');
 
             if (!username || !password) {
-                showMessage(message, 'Completa todos los campos', 'error');
+                showMessage(message, 'Por favor completa todos los campos', 'error');
                 return;
             }
 
             if (usuariosDB[username] && usuariosDB[username] === password) {
                 usuarioActual = username;
                 cargarDatosUsuario();
-                showMessage(message, 'Acceso correcto', 'success');
                 
+                // Actualizar UI
+                document.getElementById('currentUser').textContent = username;
+                document.getElementById('userBadge').textContent = username;
+                document.getElementById('userBadge').style.display = 'block';
+                
+                showMessage(message, '✅ Acceso concedido', 'success');
                 setTimeout(() => {
-                    showDashboard();
-                    document.getElementById('currentUser').textContent = username;
+                    showScreen('dashboardScreen');
+                    actualizarEstadisticas();
                 }, 1000);
             } else {
-                showMessage(message, 'Usuario o contraseña incorrectos', 'error');
+                showMessage(message, '❌ Usuario o contraseña incorrectos', 'error');
             }
         }
 
         function logout() {
             usuarioActual = null;
             datosUsuario = null;
-            showLogin();
-        }
-
-        function showLogin() {
-            hideAllScreens();
-            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('userBadge').style.display = 'none';
+            showScreen('loginScreen');
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         }
 
-        function showDashboard() {
-            hideAllScreens();
-            document.getElementById('dashboardScreen').style.display = 'block';
-        }
-
-        function showRegistro() {
-            hideAllScreens();
-            document.getElementById('registroScreen').style.display = 'block';
-            document.getElementById('selectMes').value = "01";
-            document.getElementById('selectAnio').value = "2026";
-        }
-
-        function showVisualizacion() {
-            hideAllScreens();
-            document.getElementById('visualizacionScreen').style.display = 'block';
-            document.getElementById('verMes').value = "01";
-            document.getElementById('verAnio').value = "2026";
-            cargarPlanilla();
-        }
-
-        function hideAllScreens() {
-            const screens = ['loginScreen', 'dashboardScreen', 'registroScreen', 'visualizacionScreen'];
-            screens.forEach(screen => {
-                document.getElementById(screen).style.display = 'none';
+        function showScreen(screenId) {
+            // Ocultar todas las pantallas
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
             });
+            
+            // Mostrar la pantalla solicitada
+            document.getElementById(screenId).classList.add('active');
+            
+            // Si es la pantalla de tabla, cargar planilla
+            if (screenId === 'tablaScreen') {
+                cargarPlanilla();
+            }
         }
 
         function cargarDatosUsuario() {
             const datosGuardados = localStorage.getItem(`usuario_${usuarioActual}`);
-            datosUsuario = datosGuardados ? JSON.parse(datosGuardados) : { planillas: [] };
+            if (datosGuardados) {
+                datosUsuario = JSON.parse(datosGuardados);
+            } else {
+                datosUsuario = {
+                    usuario: usuarioActual,
+                    planillas: [],
+                    estadisticas: {
+                        diasTrabajados: 0,
+                        horasTotales: 0
+                    }
+                };
+            }
         }
 
         function guardarDatosUsuario() {
-            localStorage.setItem(`usuario_${usuarioActual}`, JSON.stringify(datosUsuario));
+            if (usuarioActual && datosUsuario) {
+                localStorage.setItem(`usuario_${usuarioActual}`, JSON.stringify(datosUsuario));
+            }
         }
 
+        function actualizarEstadisticas() {
+            const planillaKey = `${mesActual}-${anioActual}`;
+            const planilla = datosUsuario.planillas.find(p => p.mes === planillaKey);
+            
+            if (planilla && planilla.registros) {
+                let diasTrabajados = 0;
+                let horasTotales = 0;
+                
+                planilla.registros.forEach(registro => {
+                    if (registro.ingreso && registro.salida) {
+                        diasTrabajados++;
+                        horasTotales += registro.horas || calcularHoras(registro.ingreso, registro.salida);
+                    }
+                });
+                
+                document.getElementById('diasTrabajados').textContent = diasTrabajados;
+                document.getElementById('horasTotales').textContent = horasTotales + 'h';
+            } else {
+                document.getElementById('diasTrabajados').textContent = '0';
+                document.getElementById('horasTotales').textContent = '0h';
+            }
+        }
+
+        // ===== FUNCIONES DEL CALENDARIO =====
         function cargarMes() {
             mesActual = document.getElementById('selectMes').value;
             anioActual = document.getElementById('selectAnio').value;
             clienteActual = document.getElementById('inputCliente').value.trim();
 
             if (!clienteActual) {
-                showMessage(document.getElementById('registroMessage'), 'Ingresa el nombre del cliente', 'error');
+                showMessage(document.getElementById('registroMessage'), '⚠️ Ingresa el nombre del cliente', 'error');
                 return;
             }
 
-            mostrarDiasDelMes();
-            showMessage(document.getElementById('registroMessage'), 'Mes cargado correctamente', 'success');
+            mostrarCalendario();
+            showMessage(document.getElementById('registroMessage'), '✅ Mes cargado correctamente', 'success');
         }
 
-        function mostrarDiasDelMes() {
+        function mostrarCalendario() {
             const container = document.getElementById('calendarContainer');
             const ultimoDia = new Date(anioActual, mesActual, 0).getDate();
-            const nombreMes = getNombreMes(mesActual);
+            const nombreMes = meses[parseInt(mesActual) - 1];
             
-            let html = `<h4 style="margin-bottom: 10px;">${nombreMes} ${anioActual} - ${clienteActual}</h4>`;
+            document.getElementById('calendarTitle').textContent = `${nombreMes} ${anioActual} - ${clienteActual}`;
+            
+            let html = '';
             
             for (let dia = 1; dia <= ultimoDia; dia++) {
                 const registro = obtenerRegistroDia(dia);
                 const fecha = new Date(anioActual, mesActual - 1, dia);
-                const nombreDia = getNombreDia(fecha.getDay());
+                const nombreDia = diasSemana[fecha.getDay()];
                 
                 const tieneRegistro = registro.ingreso && registro.salida;
-                const clase = tieneRegistro ? 'registrado' : 'sin-registro';
-                const texto = tieneRegistro ? '✓ Registrado' : '✗ Sin registro';
-                const horas = tieneRegistro ? calcularHoras(registro.ingreso, registro.salida) + 'h' : '';
+                const clase = tieneRegistro ? 'registered' : 'empty';
+                const texto = tieneRegistro ? 'Registrado' : 'Sin registro';
+                const horas = tieneRegistro ? (registro.horas || calcularHoras(registro.ingreso, registro.salida)) + 'h' : '';
                 
                 html += `
-                    <div class="day-item ${clase}" onclick="seleccionarDia(${dia})">
-                        <div class="day-info">
-                            <div class="day-number">Día ${dia} - ${nombreDia}</div>
-                            <div class="day-status">${texto}</div>
-                        </div>
-                        <div class="day-horas">${horas}</div>
+                    <div class="calendar-day ${clase}" onclick="seleccionarDia(${dia})">
+                        <div class="day-number">${dia}</div>
+                        <div class="day-name">${nombreDia}</div>
+                        <div class="day-status">${texto}</div>
+                        ${horas ? `<div class="day-hours">${horas}</div>` : ''}
                     </div>
                 `;
             }
             
             container.innerHTML = html;
+            actualizarEstadisticas();
         }
 
         function seleccionarDia(dia) {
             diaSeleccionado = dia;
             const registro = obtenerRegistroDia(dia);
             const fecha = new Date(anioActual, mesActual - 1, dia);
-            const nombreDia = getNombreDia(fecha.getDay());
-            const nombreMes = getNombreMes(mesActual);
+            const nombreDia = diasSemana[fecha.getDay()];
+            const nombreMes = meses[parseInt(mesActual) - 1];
             
             document.getElementById('modalTitle').textContent = 'Registrar Horario';
-            document.getElementById('fechaActualModal').textContent = `Día ${dia} - ${nombreDia} - ${nombreMes} ${anioActual}`;
+            document.getElementById('fechaModal').textContent = `Día ${dia} - ${nombreDia}`;
+            document.getElementById('infoFecha').textContent = `${nombreMes} ${anioActual}`;
             
             // Configurar selectores de horas
             configurarSelectorHoras('ingresoSelector', registro.ingreso || '', 'ingreso');
@@ -650,26 +1182,28 @@
             // Restaurar selecciones si hay registro
             if (registro.ingreso) {
                 horaIngresoSeleccionada = registro.ingreso;
+                document.getElementById('displayIngreso').textContent = registro.ingreso;
                 marcarHoraSeleccionada('ingresoSelector', registro.ingreso);
             }
             if (registro.salida) {
                 horaSalidaSeleccionada = registro.salida;
+                document.getElementById('displaySalida').textContent = registro.salida;
                 marcarHoraSeleccionada('salidaSelector', registro.salida);
             }
             
             calcularHorasTotales();
-            document.getElementById('registroModal').style.display = 'block';
+            document.getElementById('modalOverlay').classList.add('active');
         }
 
         function configurarSelectorHoras(selectorId, horaActual, tipo) {
             const container = document.getElementById(selectorId);
             let html = '';
             
-            horasDisponibles.forEach((hora, index) => {
+            horasDisponibles.forEach((hora) => {
                 const horaNum = hora.split(':')[0];
                 const seleccionada = hora === horaActual;
                 html += `
-                    <button class="hora-btn ${seleccionada ? 'selected' : ''}" 
+                    <button class="hour-btn ${seleccionada ? 'selected' : ''}" 
                             onclick="seleccionarHora('${hora}', '${tipo}')">
                         ${horaNum}
                     </button>
@@ -680,7 +1214,7 @@
         }
 
         function marcarHoraSeleccionada(selectorId, hora) {
-            const botones = document.querySelectorAll(`#${selectorId} .hora-btn`);
+            const botones = document.querySelectorAll(`#${selectorId} .hour-btn`);
             botones.forEach(boton => {
                 const horaNum = boton.textContent.padStart(2, '0') + ':00';
                 boton.classList.toggle('selected', horaNum === hora);
@@ -690,9 +1224,11 @@
         function seleccionarHora(hora, tipo) {
             if (tipo === 'ingreso') {
                 horaIngresoSeleccionada = hora;
+                document.getElementById('displayIngreso').textContent = hora;
                 marcarHoraSeleccionada('ingresoSelector', hora);
             } else {
                 horaSalidaSeleccionada = hora;
+                document.getElementById('displaySalida').textContent = hora;
                 marcarHoraSeleccionada('salidaSelector', hora);
             }
             
@@ -700,24 +1236,24 @@
         }
 
         function calcularHorasTotales() {
-            const turnoAlert = document.getElementById('turnoNocturnoAlert');
+            const nightAlert = document.getElementById('nightShiftAlert');
             
             if (horaIngresoSeleccionada && horaSalidaSeleccionada) {
                 const horas = calcularHoras(horaIngresoSeleccionada, horaSalidaSeleccionada);
-                document.getElementById('totalHoras').textContent = horas;
+                document.getElementById('totalHoras').textContent = horas + 'h';
                 
                 // Mostrar alerta si es turno nocturno
                 const horaIn = parseInt(horaIngresoSeleccionada.split(':')[0]);
                 const horaOut = parseInt(horaSalidaSeleccionada.split(':')[0]);
                 
                 if (horaOut <= horaIn) {
-                    turnoAlert.style.display = 'block';
+                    nightAlert.style.display = 'block';
                 } else {
-                    turnoAlert.style.display = 'none';
+                    nightAlert.style.display = 'none';
                 }
             } else {
-                document.getElementById('totalHoras').textContent = '0';
-                turnoAlert.style.display = 'none';
+                document.getElementById('totalHoras').textContent = '0h';
+                nightAlert.style.display = 'none';
             }
         }
 
@@ -734,24 +1270,26 @@
             }
         }
 
-        function cerrarModal() {
-            document.getElementById('registroModal').style.display = 'none';
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
             horaIngresoSeleccionada = null;
             horaSalidaSeleccionada = null;
+            document.getElementById('displayIngreso').textContent = '--:--';
+            document.getElementById('displaySalida').textContent = '--:--';
         }
 
         function guardarRegistro() {
             const message = document.getElementById('modalMessage');
 
             if (!horaIngresoSeleccionada || !horaSalidaSeleccionada) {
-                showMessage(message, 'Selecciona ambas horas', 'error');
+                showMessage(message, '⚠️ Selecciona ambas horas', 'error');
                 return;
             }
 
             // Calcular fechas (ingreso es el día seleccionado, salida puede ser siguiente día)
             const fechaIngreso = `${anioActual}-${mesActual.padStart(2, '0')}-${diaSeleccionado.toString().padStart(2, '0')}`;
-            
             let fechaSalida = fechaIngreso;
+            
             const horaIn = parseInt(horaIngresoSeleccionada.split(':')[0]);
             const horaOut = parseInt(horaSalidaSeleccionada.split(':')[0]);
             
@@ -777,11 +1315,12 @@
             };
 
             guardarRegistroDia(registro);
-            showMessage(message, 'Registro guardado correctamente', 'success');
+            showMessage(message, '✅ Registro guardado correctamente', 'success');
 
             setTimeout(() => {
-                cerrarModal();
-                mostrarDiasDelMes();
+                closeModal();
+                mostrarCalendario();
+                actualizarEstadisticas();
             }, 1000);
         }
 
@@ -802,19 +1341,22 @@
                 horaSalidaSeleccionada = null;
                 configurarSelectorHoras('ingresoSelector', '', 'ingreso');
                 configurarSelectorHoras('salidaSelector', '', 'salida');
+                document.getElementById('displayIngreso').textContent = '--:--';
+                document.getElementById('displaySalida').textContent = '--:--';
                 calcularHorasTotales();
                 
                 const message = document.getElementById('modalMessage');
-                showMessage(message, 'Registro limpiado', 'success');
+                showMessage(message, '🔄 Registro limpiado', 'info');
                 
                 setTimeout(() => {
-                    cerrarModal();
-                    mostrarDiasDelMes();
+                    closeModal();
+                    mostrarCalendario();
+                    actualizarEstadisticas();
                 }, 1000);
             }
         }
 
-        // Funciones de datos
+        // ===== FUNCIONES DE DATOS =====
         function obtenerRegistroDia(dia) {
             const planillaKey = `${mesActual}-${anioActual}`;
             let planilla = datosUsuario.planillas.find(p => p.mes === planillaKey);
@@ -867,7 +1409,7 @@
             guardarDatosUsuario();
         }
 
-        // Visualización
+        // ===== VISUALIZACIÓN DE PLANILLA =====
         function cargarPlanilla() {
             const mes = document.getElementById('verMes').value;
             const anio = document.getElementById('verAnio').value;
@@ -877,25 +1419,32 @@
             const planilla = datosUsuario.planillas.find(p => p.mes === planillaKey);
 
             if (!planilla || !planilla.registros || planilla.registros.length === 0) {
-                container.innerHTML = '<div class="message info" style="display: block; background: #d1ecf1; color: #0c5460; padding: 10px; border-radius: 4px;">No hay registros para este mes</div>';
+                container.innerHTML = `
+                    <div class="message info" style="display: block;">
+                        <i class="fas fa-info-circle"></i> No hay registros para ${meses[parseInt(mes)-1]} ${anio}
+                    </div>
+                `;
                 return;
             }
 
             let html = `
-                <div style="margin: 10px 0; padding: 10px; background: #d4edda; border-radius: 4px;">
-                    <strong>${getNombreMes(mes)} ${anio}</strong> - Cliente: ${planilla.cliente}
+                <div style="margin: 15px 0; padding: 15px; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 10px; border: 2px solid #28a745;">
+                    <p style="font-weight: 700; color: #155724; margin: 0; text-align: center;">
+                        ${meses[parseInt(mes)-1]} ${anio} - Cliente: ${planilla.cliente}
+                    </p>
                 </div>
                 
-                <table class="planilla-table">
-                    <thead>
-                        <tr>
-                            <th>Día</th>
-                            <th>Ingreso</th>
-                            <th>Salida</th>
-                            <th>Horas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Día</th>
+                                <th>Ingreso</th>
+                                <th>Salida</th>
+                                <th>Horas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
             `;
 
             // Ordenar por día
@@ -907,31 +1456,25 @@
                     
                     html += `
                         <tr>
-                            <td><strong>${registro.dia}</strong></td>
-                            <td style="color: #28a745;">${registro.ingreso}</td>
-                            <td style="color: #dc3545;">${registro.salida}</td>
-                            <td><strong>${horas}h</strong></td>
+                            <td class="day-cell">${registro.dia}</td>
+                            <td class="ingreso-cell">${registro.ingreso}</td>
+                            <td class="salida-cell">${registro.salida}</td>
+                            <td class="horas-cell">${horas}h</td>
                         </tr>
                     `;
                 }
             });
 
-            html += '</tbody></table>';
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
             container.innerHTML = html;
         }
 
-        // Funciones utilitarias
-        function getNombreDia(numero) {
-            const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-            return dias[numero];
-        }
-
-        function getNombreMes(numero) {
-            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            return meses[parseInt(numero) - 1];
-        }
-
+        // ===== FUNCIONES UTILITARIAS =====
         function showMessage(element, text, type) {
             element.textContent = text;
             element.className = `message ${type}`;
@@ -942,15 +1485,19 @@
             }, 3000);
         }
 
-        // Inicialización
+        // ===== INICIALIZACIÓN =====
         document.addEventListener('DOMContentLoaded', () => {
-            showLogin();
-            
             // Configurar valores por defecto
             document.getElementById('selectMes').value = "01";
             document.getElementById('selectAnio').value = "2026";
             document.getElementById('verMes').value = "01";
             document.getElementById('verAnio').value = "2026";
+            
+            // Verificar si hay usuario en sesión
+            const datosGuardados = localStorage.getItem(`usuario_${usuarioActual}`);
+            if (datosGuardados) {
+                showScreen('dashboardScreen');
+            }
         });
     </script>
 </body>
