@@ -16,6 +16,9 @@
             background: #f0f2f5;
             padding: 10px;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
@@ -23,7 +26,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 100%;
+            max-width: 500px;
             overflow: hidden;
         }
 
@@ -63,7 +66,7 @@
             font-weight: bold;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -126,6 +129,7 @@
             border-radius: 4px;
             cursor: pointer;
             margin-top: 10px;
+            width: 100%;
         }
 
         .action-card {
@@ -157,6 +161,9 @@
             border-radius: 4px;
             border: 1px solid #ddd;
             cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .day-item.registrado {
@@ -169,8 +176,24 @@
             border-color: #dc3545;
         }
 
+        .day-info {
+            flex: 1;
+        }
+
         .day-number {
             font-weight: bold;
+            font-size: 16px;
+        }
+
+        .day-status {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .day-horas {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
         }
 
         /* Modal */
@@ -193,7 +216,7 @@
             border-radius: 8px;
             padding: 20px;
             width: 100%;
-            max-width: 500px;
+            max-width: 400px;
             margin: 0 auto;
         }
 
@@ -201,24 +224,52 @@
             float: right;
             cursor: pointer;
             font-size: 20px;
+            color: #666;
         }
 
-        .time-input-group {
-            margin: 15px 0;
+        /* Selector de horas - horizontal */
+        .horas-selector {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin: 10px 0;
         }
 
-        .time-input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .time-input {
-            width: 100%;
-            padding: 12px;
+        .hora-btn {
+            padding: 8px 5px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .hora-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .hora-btn.selected {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        /* Selector de fecha */
+        .fecha-selector {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .fecha-actual {
             font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 4px;
         }
 
         /* Tabla de planilla */
@@ -391,14 +442,34 @@
             <span class="close-modal" onclick="cerrarModal()">×</span>
             <h3 id="modalTitle">Registrar Horario</h3>
             
-            <div class="time-input-group">
-                <label>Fecha y Hora de Ingreso</label>
-                <input type="datetime-local" id="fechaHoraIngreso" class="time-input" step="3600">
+            <div class="fecha-selector">
+                <div class="fecha-actual" id="fechaActualModal">
+                    Día 1 - Enero 2026
+                </div>
             </div>
 
-            <div class="time-input-group">
-                <label>Fecha y Hora de Salida</label>
-                <input type="datetime-local" id="fechaHoraSalida" class="time-input" step="3600">
+            <div style="margin: 20px 0;">
+                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Hora de Ingreso</label>
+                <div class="horas-selector" id="ingresoSelector">
+                    <!-- Horas se cargan aquí -->
+                </div>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Hora de Salida</label>
+                <div class="horas-selector" id="salidaSelector">
+                    <!-- Horas se cargan aquí -->
+                </div>
+            </div>
+
+            <div id="turnoNocturnoAlert" style="margin: 15px 0; padding: 10px; background: #e3f2fd; border-radius: 4px; border: 1px solid #bbdefb; display: none;">
+                <p style="margin: 0; font-size: 14px; color: #1565c0;">
+                    <i class="fas fa-moon"></i> Turno nocturno: Salida del día siguiente
+                </p>
+            </div>
+
+            <div id="horasCalculadas" style="margin: 15px 0; padding: 12px; background: #f5f5f5; border-radius: 4px; text-align: center;">
+                <p style="font-weight: bold; color: #2c3e50;">Horas totales: <span id="totalHoras">0</span>h</p>
             </div>
 
             <div id="modalMessage" class="message" style="display: none;"></div>
@@ -428,12 +499,20 @@
             'usuario15': 'contraseña15'
         };
 
+        const horasDisponibles = [
+            "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00",
+            "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
+            "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
+        ];
+
         let usuarioActual = null;
         let datosUsuario = null;
         let mesActual = "01";
         let anioActual = "2026";
         let clienteActual = null;
         let diaSeleccionado = null;
+        let horaIngresoSeleccionada = null;
+        let horaSalidaSeleccionada = null;
 
         // Funciones principales
         function login() {
@@ -520,29 +599,33 @@
             }
 
             mostrarDiasDelMes();
-            showMessage(document.getElementById('registroMessage'), 'Mes cargado', 'success');
+            showMessage(document.getElementById('registroMessage'), 'Mes cargado correctamente', 'success');
         }
 
         function mostrarDiasDelMes() {
             const container = document.getElementById('calendarContainer');
             const ultimoDia = new Date(anioActual, mesActual, 0).getDate();
+            const nombreMes = getNombreMes(mesActual);
             
-            let html = '<h4 style="margin-bottom: 10px;">Selecciona un día:</h4>';
+            let html = `<h4 style="margin-bottom: 10px;">${nombreMes} ${anioActual} - ${clienteActual}</h4>`;
             
             for (let dia = 1; dia <= ultimoDia; dia++) {
                 const registro = obtenerRegistroDia(dia);
                 const fecha = new Date(anioActual, mesActual - 1, dia);
-                const nombreDia = obtenerNombreDia(fecha.getDay());
+                const nombreDia = getNombreDia(fecha.getDay());
                 
                 const tieneRegistro = registro.ingreso && registro.salida;
                 const clase = tieneRegistro ? 'registrado' : 'sin-registro';
                 const texto = tieneRegistro ? '✓ Registrado' : '✗ Sin registro';
+                const horas = tieneRegistro ? calcularHoras(registro.ingreso, registro.salida) + 'h' : '';
                 
                 html += `
                     <div class="day-item ${clase}" onclick="seleccionarDia(${dia})">
-                        <div class="day-number">Día ${dia} - ${nombreDia}</div>
-                        <div>${texto}</div>
-                        ${tieneRegistro ? `<small>${registro.ingreso} a ${registro.salida}</small>` : ''}
+                        <div class="day-info">
+                            <div class="day-number">Día ${dia} - ${nombreDia}</div>
+                            <div class="day-status">${texto}</div>
+                        </div>
+                        <div class="day-horas">${horas}</div>
                     </div>
                 `;
             }
@@ -554,63 +637,147 @@
             diaSeleccionado = dia;
             const registro = obtenerRegistroDia(dia);
             const fecha = new Date(anioActual, mesActual - 1, dia);
-            const nombreDia = obtenerNombreDia(fecha.getDay());
+            const nombreDia = getNombreDia(fecha.getDay());
+            const nombreMes = getNombreMes(mesActual);
             
-            document.getElementById('modalTitle').textContent = `Día ${dia} - ${nombreDia}`;
+            document.getElementById('modalTitle').textContent = 'Registrar Horario';
+            document.getElementById('fechaActualModal').textContent = `Día ${dia} - ${nombreDia} - ${nombreMes} ${anioActual}`;
             
-            // Configurar valores por defecto
-            const fechaIngreso = `${anioActual}-${mesActual.padStart(2, '0')}-${dia.toString().padStart(2, '0')}T00:00`;
-            const fechaSalida = `${anioActual}-${mesActual.padStart(2, '0')}-${dia.toString().padStart(2, '0')}T00:00`;
+            // Configurar selectores de horas
+            configurarSelectorHoras('ingresoSelector', registro.ingreso || '', 'ingreso');
+            configurarSelectorHoras('salidaSelector', registro.salida || '', 'salida');
             
-            if (registro.fecha_ingreso) {
-                document.getElementById('fechaHoraIngreso').value = registro.fecha_ingreso.replace(' ', 'T');
-            } else {
-                document.getElementById('fechaHoraIngreso').value = fechaIngreso;
+            // Restaurar selecciones si hay registro
+            if (registro.ingreso) {
+                horaIngresoSeleccionada = registro.ingreso;
+                marcarHoraSeleccionada('ingresoSelector', registro.ingreso);
+            }
+            if (registro.salida) {
+                horaSalidaSeleccionada = registro.salida;
+                marcarHoraSeleccionada('salidaSelector', registro.salida);
             }
             
-            if (registro.fecha_salida) {
-                document.getElementById('fechaHoraSalida').value = registro.fecha_salida.replace(' ', 'T');
-            } else {
-                document.getElementById('fechaHoraSalida').value = fechaSalida;
-            }
-            
+            calcularHorasTotales();
             document.getElementById('registroModal').style.display = 'block';
+        }
+
+        function configurarSelectorHoras(selectorId, horaActual, tipo) {
+            const container = document.getElementById(selectorId);
+            let html = '';
+            
+            horasDisponibles.forEach((hora, index) => {
+                const horaNum = hora.split(':')[0];
+                const seleccionada = hora === horaActual;
+                html += `
+                    <button class="hora-btn ${seleccionada ? 'selected' : ''}" 
+                            onclick="seleccionarHora('${hora}', '${tipo}')">
+                        ${horaNum}
+                    </button>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function marcarHoraSeleccionada(selectorId, hora) {
+            const botones = document.querySelectorAll(`#${selectorId} .hora-btn`);
+            botones.forEach(boton => {
+                const horaNum = boton.textContent.padStart(2, '0') + ':00';
+                boton.classList.toggle('selected', horaNum === hora);
+            });
+        }
+
+        function seleccionarHora(hora, tipo) {
+            if (tipo === 'ingreso') {
+                horaIngresoSeleccionada = hora;
+                marcarHoraSeleccionada('ingresoSelector', hora);
+            } else {
+                horaSalidaSeleccionada = hora;
+                marcarHoraSeleccionada('salidaSelector', hora);
+            }
+            
+            calcularHorasTotales();
+        }
+
+        function calcularHorasTotales() {
+            const turnoAlert = document.getElementById('turnoNocturnoAlert');
+            
+            if (horaIngresoSeleccionada && horaSalidaSeleccionada) {
+                const horas = calcularHoras(horaIngresoSeleccionada, horaSalidaSeleccionada);
+                document.getElementById('totalHoras').textContent = horas;
+                
+                // Mostrar alerta si es turno nocturno
+                const horaIn = parseInt(horaIngresoSeleccionada.split(':')[0]);
+                const horaOut = parseInt(horaSalidaSeleccionada.split(':')[0]);
+                
+                if (horaOut <= horaIn) {
+                    turnoAlert.style.display = 'block';
+                } else {
+                    turnoAlert.style.display = 'none';
+                }
+            } else {
+                document.getElementById('totalHoras').textContent = '0';
+                turnoAlert.style.display = 'none';
+            }
+        }
+
+        function calcularHoras(ingreso, salida) {
+            const horaIn = parseInt(ingreso.split(':')[0]);
+            const horaOut = parseInt(salida.split(':')[0]);
+            
+            if (horaOut <= horaIn) {
+                // Turno nocturno (cruza la medianoche)
+                return (24 - horaIn) + horaOut;
+            } else {
+                // Turno normal
+                return horaOut - horaIn;
+            }
         }
 
         function cerrarModal() {
             document.getElementById('registroModal').style.display = 'none';
+            horaIngresoSeleccionada = null;
+            horaSalidaSeleccionada = null;
         }
 
         function guardarRegistro() {
-            const fechaIngreso = document.getElementById('fechaHoraIngreso').value;
-            const fechaSalida = document.getElementById('fechaHoraSalida').value;
             const message = document.getElementById('modalMessage');
 
-            if (!fechaIngreso || !fechaSalida) {
-                showMessage(message, 'Completa ambas fechas', 'error');
+            if (!horaIngresoSeleccionada || !horaSalidaSeleccionada) {
+                showMessage(message, 'Selecciona ambas horas', 'error');
                 return;
             }
 
-            // Convertir a formato legible
-            const ingresoDateTime = new Date(fechaIngreso);
-            const salidaDateTime = new Date(fechaSalida);
+            // Calcular fechas (ingreso es el día seleccionado, salida puede ser siguiente día)
+            const fechaIngreso = `${anioActual}-${mesActual.padStart(2, '0')}-${diaSeleccionado.toString().padStart(2, '0')}`;
             
-            if (salidaDateTime <= ingresoDateTime) {
-                showMessage(message, 'La salida debe ser después del ingreso', 'error');
-                return;
+            let fechaSalida = fechaIngreso;
+            const horaIn = parseInt(horaIngresoSeleccionada.split(':')[0]);
+            const horaOut = parseInt(horaSalidaSeleccionada.split(':')[0]);
+            
+            // Si es turno nocturno (salida menor que ingreso), salida es del día siguiente
+            if (horaOut <= horaIn) {
+                const diaSalida = diaSeleccionado + 1;
+                const ultimoDia = new Date(anioActual, mesActual, 0).getDate();
+                const mesSalida = diaSalida > ultimoDia ? parseInt(mesActual) + 1 : mesActual;
+                const anioSalida = diaSalida > ultimoDia ? (mesActual === '12' ? parseInt(anioActual) + 1 : anioActual) : anioActual;
+                const diaSalidaAjustado = diaSalida > ultimoDia ? 1 : diaSalida;
+                
+                fechaSalida = `${anioSalida}-${mesSalida.toString().padStart(2, '0')}-${diaSalidaAjustado.toString().padStart(2, '0')}`;
             }
 
             // Guardar registro
             const registro = {
                 dia: diaSeleccionado,
-                fecha_ingreso: formatDateTimeLocal(ingresoDateTime),
-                fecha_salida: formatDateTimeLocal(salidaDateTime),
-                ingreso: formatHora(ingresoDateTime),
-                salida: formatHora(salidaDateTime)
+                fecha_ingreso: fechaIngreso,
+                fecha_salida: fechaSalida,
+                ingreso: horaIngresoSeleccionada,
+                salida: horaSalidaSeleccionada,
+                horas: calcularHoras(horaIngresoSeleccionada, horaSalidaSeleccionada)
             };
 
             guardarRegistroDia(registro);
-            showMessage(message, 'Registro guardado', 'success');
+            showMessage(message, 'Registro guardado correctamente', 'success');
 
             setTimeout(() => {
                 cerrarModal();
@@ -625,9 +792,17 @@
                     fecha_ingreso: '', 
                     fecha_salida: '', 
                     ingreso: '', 
-                    salida: '' 
+                    salida: '',
+                    horas: 0
                 };
                 guardarRegistroDia(registro);
+                
+                // Limpiar selecciones
+                horaIngresoSeleccionada = null;
+                horaSalidaSeleccionada = null;
+                configurarSelectorHoras('ingresoSelector', '', 'ingreso');
+                configurarSelectorHoras('salidaSelector', '', 'salida');
+                calcularHorasTotales();
                 
                 const message = document.getElementById('modalMessage');
                 showMessage(message, 'Registro limpiado', 'success');
@@ -660,7 +835,8 @@
                     fecha_ingreso: '', 
                     fecha_salida: '', 
                     ingreso: '', 
-                    salida: '' 
+                    salida: '',
+                    horas: 0
                 };
             }
 
@@ -707,17 +883,16 @@
 
             let html = `
                 <div style="margin: 10px 0; padding: 10px; background: #d4edda; border-radius: 4px;">
-                    <strong>${obtenerNombreMes(mes)} ${anio}</strong> - Cliente: ${planilla.cliente}
+                    <strong>${getNombreMes(mes)} ${anio}</strong> - Cliente: ${planilla.cliente}
                 </div>
                 
                 <table class="planilla-table">
                     <thead>
                         <tr>
                             <th>Día</th>
-                            <th>Fecha Ingreso</th>
-                            <th>Hora Ingreso</th>
-                            <th>Fecha Salida</th>
-                            <th>Hora Salida</th>
+                            <th>Ingreso</th>
+                            <th>Salida</th>
+                            <th>Horas</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -727,14 +902,15 @@
             const registrosOrdenados = [...planilla.registros].sort((a, b) => a.dia - b.dia);
             
             registrosOrdenados.forEach(registro => {
-                if (registro.fecha_ingreso && registro.fecha_salida) {
+                if (registro.ingreso && registro.salida) {
+                    const horas = registro.horas || calcularHoras(registro.ingreso, registro.salida);
+                    
                     html += `
                         <tr>
-                            <td>${registro.dia}</td>
-                            <td>${formatFecha(registro.fecha_ingreso)}</td>
-                            <td>${registro.ingreso}</td>
-                            <td>${formatFecha(registro.fecha_salida)}</td>
-                            <td>${registro.salida}</td>
+                            <td><strong>${registro.dia}</strong></td>
+                            <td style="color: #28a745;">${registro.ingreso}</td>
+                            <td style="color: #dc3545;">${registro.salida}</td>
+                            <td><strong>${horas}h</strong></td>
                         </tr>
                     `;
                 }
@@ -745,34 +921,15 @@
         }
 
         // Funciones utilitarias
-        function obtenerNombreDia(numero) {
-            const dias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        function getNombreDia(numero) {
+            const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
             return dias[numero];
         }
 
-        function obtenerNombreMes(numero) {
+        function getNombreMes(numero) {
             const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                           'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             return meses[parseInt(numero) - 1];
-        }
-
-        function formatDateTimeLocal(date) {
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            const hours = date.getHours().toString().padStart(2, '0');
-            
-            return `${year}-${month}-${day} ${hours}:00`;
-        }
-
-        function formatHora(date) {
-            return date.getHours().toString().padStart(2, '0') + ':00';
-        }
-
-        function formatFecha(fechaStr) {
-            if (!fechaStr) return '';
-            const partes = fechaStr.split(' ')[0].split('-');
-            return `${partes[2]}/${partes[1]}`;
         }
 
         function showMessage(element, text, type) {
@@ -794,12 +951,6 @@
             document.getElementById('selectAnio').value = "2026";
             document.getElementById('verMes').value = "01";
             document.getElementById('verAnio').value = "2026";
-            
-            // Configurar input datetime-local para mostrar solo horas completas
-            const inputs = document.querySelectorAll('input[type="datetime-local"]');
-            inputs.forEach(input => {
-                input.step = 3600; // 1 hora en segundos
-            });
         });
     </script>
 </body>
