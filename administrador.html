@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador | BRAND SEGURIDAD</title>
+    <style>
+        /* Variables y reset */
+        :root {
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #17a2b8;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            --border-radius: 10px;
+            --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Layout principal */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            background: var(--primary-dark);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--secondary);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: var(--secondary);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-link span {
+            font-weight: 500;
+        }
+
+        .badge {
+            background: var(--danger);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Content area */
+        .content {
+            padding: 30px;
+        }
+
+        /* Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            border-top: 4px solid;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.primary {
+            border-top-color: var(--primary);
+        }
+
+        .stat-card.success {
+            border-top-color: var(--success);
+        }
+
+        .stat-card.warning {
+            border-top-color: var(--warning);
+        }
+
+        .stat-card.danger {
+            border-top-color: var(--danger);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 22px;
+            color: white;
+        }
+
+        .stat-card.primary .stat-card-icon {
+            background: var(--primary);
+        }
+
+        .stat-card.success .stat-card-icon {
+            background: var(--success);
+        }
+
+        .stat-card.warning .stat-card-icon {
+            background: var(--warning);
+        }
+
+        .stat-card.danger .stat-card-icon {
+            background: var(--danger);
+        }
+
+        .stat-card-info h3 {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card-info p {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: #f8f9fa;
+        }
+
+        .data-table th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid #eee;
+            white-space: nowrap;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: var(--transition);
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .data-table td {
+            padding: 15px 20px;
+            vertical-align: middle;
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-alert {
+            background: #f8d7da;
+            color: #721c24;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Action buttons */
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 0 2px;
+        }
+
+        .btn-edit {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-view {
+            background: var(--success);
+            color: white;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Forms */
+        .form-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .pagination-btn {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pagination-btn:hover {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .pagination-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        /* Alerts */
+        .alerts-container {
+            margin-bottom: 30px;
+        }
+
+        .alert-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--box-shadow);
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .alert-card.warning {
+            border-left-color: var(--warning);
+            background: linear-gradient(to right, #fff3cd, white);
+        }
+
+        .alert-card.danger {
+            border-left-color: var(--danger);
+            background: linear-gradient(to right, #f8d7da, white);
+        }
+
+        .alert-info {
+            flex: 1;
+        }
+
+        .alert-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .alert-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .alert-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 25px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: #f8f9fa;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 0 20px;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--secondary);
+        }
+
+        .tab.active {
+            color: var(--secondary);
+            border-bottom-color: var(--secondary);
+        }
+
+        /* Search and filters */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            font-size: 16px;
+            min-width: 150px;
+        }
+
+        /* Day counter */
+        .day-counter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        .day-counter.warning {
+            background: var(--warning);
+        }
+
+        .day-counter.danger {
+            background: var(--danger);
+        }
+
+        /* Login screen for admin */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .login-container h1 {
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .loading i {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PANEL ADMINISTRADOR</h2>
+                <p>BRAND SEGURIDAD LTDA.</p>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="#dashboard" class="nav-link active" onclick="showSection('dashboard')">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#usuarios" class="nav-link" onclick="showSection('usuarios')">
+                        <i class="fas fa-users"></i>
+                        <span>Gestión de Usuarios</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#planillas" class="nav-link" onclick="showSection('planillas')">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Ver Planillas</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#alertas" class="nav-link" onclick="showSection('alertas')">
+                        <i class="fas fa-bell"></i>
+                        <span>Alertas de Descanso</span>
+                        <span class="badge" id="alertBadge">0</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#configuracion" class="nav-link" onclick="showSection('configuracion')">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item" style="margin-top: 50px;">
+                    <a href="#" class="nav-link" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="header-title">
+                    <h1 id="pageTitle">Dashboard Administrador</h1>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">Administrador</div>
+                            <div style="font-size: 12px; color: #666;">Supervisor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="content-section active">
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <div class="stat-card-header">
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <h3>Usuarios Activos</h3>
+                                    <p id="totalUsuarios">15</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card success">
+                            <div class="stat-card-header">
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <h3>Días Registrados Hoy</h3>
+                                    <p id="diasRegistradosHoy">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card warning">
+                            <div class="stat-card-header">
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <h3>Alertas Activas</h3>
+                                    <p id="alertasActivas">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card danger">
+                            <div class="stat-card-header">
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-bed"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <h3>Por Salir a Descanso</h3>
+                                    <p id="porDescansar">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts Section -->
+                    <div class="alerts-container">
+                        <div class="table-header">
+                            <h3><i class="fas fa-bell"></i> Alertas Recientes</h3>
+                        </div>
+                        
+                        <div id="alertsList">
+                            <!-- Alerts will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
+                        </div>
+                        
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Fecha</th>
+                                    <th>Actividad</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentActivity">
+                                <!-- Activity will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Usuarios Section -->
+                <section id="usuarios" class="content-section">
+                    <div class="table-header">
+                        <h3><i class="fas fa-users-cog"></i> Gestión de Usuarios</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" onclick="openUserModal(null)">
+                                <i class="fas fa-plus"></i> Nuevo Usuario
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="search-box">
+                        <input type="text" id="searchUser" class="search-input" placeholder="Buscar usuario..." onkeyup="searchUsers()">
+                        <select id="filterStatus" class="filter-select" onchange="filterUsers()">
+                            <option value="">Todos los estados</option>
+                            <option value="active">Activos</option>
+                            <option value="inactive">Inactivos</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Nombre</th>
+                                    <th>Estado</th>
+                                    <th>Días Trabajados</th>
+                                    <th>Último Acceso</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="usersPagination">
+                        <!-- Pagination will be generated here -->
+                    </div>
+                </section>
+
+                <!-- Planillas Section -->
+                <section id="planillas" class="content-section">
+                    <div class="tabs">
+                        <button class="tab active" onclick="changePlanillaTab('todos')">Todos los Usuarios</button>
+                        <button class="tab" onclick="changePlanillaTab('mes')">Por Mes</button>
+                        <button class="tab" onclick="changePlanillaTab('usuario')">Por Usuario</button>
+                    </div>
+
+                    <!-- Filter by month -->
+                    <div id="monthFilter" style="display: none; margin-bottom: 20px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Mes</label>
+                                <select id="selectMonth" class="form-control">
+                                    <option value="01">Enero</option>
+                                    <option value="02">Febrero</option>
+                                    <option value="03">Marzo</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Mayo</option>
+                                    <option value="06">Junio</option>
+                                    <option value="07">Julio</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Año</label>
+                                <input type="number" id="selectYear" class="form-control" value="2026" min="2024" max="2030">
+                            </div>
+                            
+                            <div class="form-group" style="display: flex; align-items: flex-end;">
+                                <button class="btn btn-primary" onclick="loadPlanillasByMonth()">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter by user -->
+                    <div id="userFilter" style="display: none; margin-bottom: 20px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Usuario</label>
+                                <select id="selectUser" class="form-control">
+                                    <!-- Users will be loaded here -->
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" style="display: flex; align-items: flex-end;">
+                                <button class="btn btn-primary" onclick="loadPlanillasByUser()">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Planillas Table -->
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3><i class="fas fa-file-contract"></i> Planillas de Horarios</h3>
+                        </div>
+                        
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Mes/Año</th>
+                                    <th>Cliente</th>
+                                    <th>Días Registrados</th>
+                                    <th>Horas Totales</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="planillasTable">
+                                <!-- Planillas will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="planillasPagination">
+                        <!-- Pagination will be generated here -->
+                    </div>
+                </section>
+
+                <!-- Alertas Section -->
+                <section id="alertas" class="content-section">
+                    <div class="alerts-container">
+                        <div class="table-header">
+                            <h3><i class="fas fa-bed"></i> Control de Descansos</h3>
+                            <div class="table-actions">
+                                <button class="btn btn-warning" onclick="generateRestReport()">
+                                    <i class="fas fa-file-pdf"></i> Generar Reporte
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Alerts Info -->
+                        <div style="margin-bottom: 25px; padding: 20px; background: #e3f2fd; border-radius: var(--border-radius);">
+                            <h4 style="color: #1976d2; margin-bottom: 10px;">
+                                <i class="fas fa-info-circle"></i> Sistema de Alertas de Descanso
+                            </h4>
+                            <p style="color: #555;">
+                                El sistema monitorea los días trabajados de cada vigilante. Se activan alertas cuando:
+                            </p>
+                            <ul style="color: #555; margin-top: 10px; padding-left: 20px;">
+                                <li><strong>Día 12:</strong> Alerta amarilla - Quedan 3 días para descanso</li>
+                                <li><strong>Día 13:</strong> Alerta naranja - Quedan 2 días para descanso</li>
+                                <li><strong>Día 14:</strong> Alerta roja - Último día de trabajo</li>
+                                <li><strong>Día 15:</strong> Debe salir a descansar por 15 días</li>
+                            </ul>
+                        </div>
+
+                        <!-- Current Alerts -->
+                        <div id="restAlertsContainer">
+                            <!-- Rest alerts will be loaded here -->
+                        </div>
+
+                        <!-- Users approaching rest -->
+                        <div class="table-container" style="margin-top: 30px;">
+                            <div class="table-header">
+                                <h3><i class="fas fa-user-clock"></i> Vigilantes por Salir a Descanso</h3>
+                            </div>
+                            
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Días Trabajados</th>
+                                        <th>Días Restantes</th>
+                                        <th>Último Registro</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="restUsersTable">
+                                    <!-- Users approaching rest will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Configuración Section -->
+                <section id="configuracion" class="content-section">
+                    <div class="form-container">
+                        <h2 style="margin-bottom: 25px; color: var(--primary);">
+                            <i class="fas fa-cog"></i> Configuración del Sistema
+                        </h2>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Días de Trabajo Antes del Descanso</label>
+                            <input type="number" id="diasTrabajo" class="form-control" value="15" min="1" max="30">
+                            <small style="color: #666;">Número de días que trabaja un vigilante antes de descansar</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Días de Descanso</label>
+                            <input type="number" id="diasDescanso" class="form-control" value="15" min="1" max="30">
+                            <small style="color: #666;">Número de días de descanso después del período de trabajo</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Día para Primera Alerta</label>
+                            <input type="number" id="primerAlerta" class="form-control" value="12" min="1" max="14">
+                            <small style="color: #666;">Día en que se activa la primera alerta (3 días antes del descanso)</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Día para Alerta Crítica</label>
+                            <input type="number" id="alertaCritica" class="form-control" value="14" min="1" max="15">
+                            <small style="color: #666;">Día en que se activa la alerta crítica (último día de trabajo)</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Correo para Notificaciones</label>
+                            <input type="email" id="emailNotificaciones" class="form-control" placeholder="admin@brandseguridad.com">
+                            <small style="color: #666;">Correo donde se enviarán las alertas importantes</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Intervalo de Actualización (minutos)</label>
+                            <input type="number" id="intervaloActualizacion" class="form-control" value="5" min="1" max="60">
+                            <small style="color: #666;">Cada cuántos minutos se actualizan las alertas automáticamente</small>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 30px;">
+                            <button class="btn btn-success" onclick="saveConfiguration()" style="padding: 15px 40px;">
+                                <i class="fas fa-save"></i> Guardar Configuración
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar/crear usuario -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalUserTitle">Nuevo Usuario</h3>
+                <button class="modal-close" onclick="closeUserModal()">×</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre de Usuario</label>
+                    <input type="text" id="modalUsername" class="form-control" placeholder="usuario1">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" id="modalPassword" class="form-control" placeholder="********">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Nombre Completo</label>
+                    <input type="text" id="modalFullName" class="form-control" placeholder="Nombre Apellido">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Cédula</label>
+                    <input type="text" id="modalCedula" class="form-control" placeholder="1234567890">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Turno</label>
+                    <select id="modalTurno" class="form-control">
+                        <option value="diurno">Diurno</option>
+                        <option value="nocturno">Nocturno</option>
+                        <option value="mixto">Mixto</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Estado</label>
+                    <select id="modalEstado" class="form-control">
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
+                        <option value="descanso">En descanso</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Días Trabajados Actuales</label>
+                    <input type="number" id="modalDiasTrabajados" class="form-control" value="0" min="0" max="15">
+                    <small style="color: #666;">Días trabajados en el período actual</small>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeUserModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveUser()">Guardar Usuario</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ver detalles de planilla -->
+    <div class="modal-overlay" id="planillaDetailModal">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 id="modalPlanillaTitle">Detalles de Planilla</h3>
+                <button class="modal-close" onclick="closePlanillaModal()">×</button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="planillaDetailContent">
+                    <!-- Planilla details will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePlanillaModal()">Cerrar</button>
+                <button class="btn btn-primary" onclick="printPlanilla()">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal (for admin access) -->
+    <div class="modal-overlay" id="loginModal" style="display: flex;">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Acceso Administrador</h3>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Usuario Administrador</label>
+                    <input type="text" id="adminUsername" class="form-control" value="admin">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" id="adminPassword" class="form-control" value="admin123">
+                </div>
+                
+                <div id="loginMessage" style="display: none; padding: 10px; border-radius: 5px; margin-bottom: 15px;"></div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="adminLogin()">Ingresar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIGURACIÓN GLOBAL =====
+        const CONFIG = {
+            diasTrabajo: 15,
+            diasDescanso: 15,
+            primerAlerta: 12, // Día 12: alerta amarilla
+            alertaCritica: 14, // Día 14: alerta roja
+            adminUser: 'admin',
+            adminPass: 'admin123'
+        };
+
+        let usuariosAdmin = [];
+        let currentUserPage = 1;
+        let usersPerPage = 10;
+        let currentPlanillaPage = 1;
+        let planillasPerPage = 10;
+        let editingUserId = null;
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAdminLogin();
+            loadConfiguration();
+            loadAllData();
+            
+            // Actualizar datos cada 5 minutos
+            setInterval(loadAllData, 5 * 60 * 1000);
+        });
+
+        // ===== FUNCIONES DE AUTENTICACIÓN =====
+        function checkAdminLogin() {
+            const loggedIn = localStorage.getItem('adminLoggedIn');
+            if (!loggedIn) {
+                document.getElementById('loginModal').style.display = 'flex';
+            } else {
+                document.getElementById('loginModal').style.display = 'none';
+            }
+        }
+
+        function adminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            const message = document.getElementById('loginMessage');
+
+            if (username === CONFIG.adminUser && password === CONFIG.adminPass) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('loginModal').style.display = 'none';
+                loadAllData();
+                showMessage(message, '✅ Acceso concedido', 'success');
+            } else {
+                showMessage(message, '❌ Credenciales incorrectas', 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.reload();
+        }
+
+        // ===== FUNCIONES DE NAVEGACIÓN =====
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remover active de todos los links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Mostrar sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Activar link correspondiente
+            document.querySelector(`[href="#${sectionId}"]`).classList.add('active');
+            
+            // Actualizar título
+            const titles = {
+                'dashboard': 'Dashboard Administrador',
+                'usuarios': 'Gestión de Usuarios',
+                'planillas': 'Planillas de Horarios',
+                'alertas': 'Control de Descansos',
+                'configuracion': 'Configuración del Sistema'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionId];
+            
+            // Cargar datos específicos de la sección
+            if (sectionId === 'usuarios') {
+                loadUsers();
+            } else if (sectionId === 'planillas') {
+                loadAllPlanillas();
+            } else if (sectionId === 'alertas') {
+                loadRestAlerts();
+            }
+            
+            // Cerrar sidebar en móviles
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function changePlanillaTab(tab) {
+            // Cambiar tabs activos
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Mostrar/ocultar filtros
+            document.getElementById('monthFilter').style.display = 'none';
+            document.getElementById('userFilter').style.display = 'none';
+            
+            if (tab === 'mes') {
+                document.getElementById('monthFilter').style.display = 'block';
+                loadPlanillasByMonth();
+            } else if (tab === 'usuario') {
+                document.getElementById('userFilter').style.display = 'block';
+                loadUsersForFilter();
+                loadPlanillasByUser();
+            } else {
+                loadAllPlanillas();
+            }
+        }
+
+        // ===== FUNCIONES DE DATOS =====
+        function loadAllData() {
+            loadUsers();
+            loadAllPlanillas();
+            loadDashboardStats();
+            loadRestAlerts();
+            loadRecentActivity();
+        }
+
+        function loadConfiguration() {
+            const savedConfig = localStorage.getItem('adminConfig');
+            if (savedConfig) {
+                Object.assign(CONFIG, JSON.parse(savedConfig));
+                
+                // Actualizar inputs
+                document.getElementById('diasTrabajo').value = CONFIG.diasTrabajo;
+                document.getElementById('diasDescanso').value = CONFIG.diasDescanso;
+                document.getElementById('primerAlerta').value = CONFIG.primerAlerta;
+                document.getElementById('alertaCritica').value = CONFIG.alertaCritica;
+                document.getElementById('emailNotificaciones').value = CONFIG.emailNotificaciones || '';
+                document.getElementById('intervaloActualizacion').value = CONFIG.intervaloActualizacion || 5;
+            }
+        }
+
+        function saveConfiguration() {
+            CONFIG.diasTrabajo = parseInt(document.getElementById('diasTrabajo').value);
+            CONFIG.diasDescanso = parseInt(document.getElementById('diasDescanso').value);
+            CONFIG.primerAlerta = parseInt(document.getElementById('primerAlerta').value);
+            CONFIG.alertaCritica = parseInt(document.getElementById('alertaCritica').value);
+            CONFIG.emailNotificaciones = document.getElementById('emailNotificaciones').value;
+            CONFIG.intervaloActualizacion = parseInt(document.getElementById('intervaloActualizacion').value);
+            
+            localStorage.setItem('adminConfig', JSON.stringify(CONFIG));
+            
+            alert('✅ Configuración guardada correctamente');
+            loadRestAlerts(); // Recargar alertas con nueva configuración
+        }
+
+        function loadDashboardStats() {
+            // Cargar usuarios
+            usuariosAdmin = [];
+            for (let i = 1; i <= 15; i++) {
+                const userKey = `usuario_usuario${i}`;
+                const userData = localStorage.getItem(userKey);
+                if (userData) {
+                    const parsed = JSON.parse(userData);
+                    usuariosAdmin.push({
+                        id: i,
+                        username: `usuario${i}`,
+                        ...parsed
+                    });
+                }
+            }
+            
+            // Actualizar estadísticas
+            document.getElementById('totalUsuarios').textContent = usuariosAdmin.length;
+            
+            // Calcular días registrados hoy
+            const today = new Date().toISOString().split('T')[0];
+            let diasHoy = 0;
+            usuariosAdmin.forEach(user => {
+                if (user.planillas && user.planillas.length > 0) {
+                    user.planillas.forEach(planilla => {
+                        if (planilla.registros) {
+                            planilla.registros.forEach(registro => {
+                                if (registro.fecha_ingreso && registro.fecha_ingreso.includes(today)) {
+                                    diasHoy++;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            document.getElementById('diasRegistradosHoy').textContent = diasHoy;
+            
+            // Calcular alertas
+            const alertCount = calculateAlertsCount();
+            document.getElementById('alertasActivas').textContent = alertCount.total;
+            document.getElementById('alertBadge').textContent = alertCount.total;
+            
+            // Calcular usuarios por descansar
+            const restCount = alertCount.porDescansar;
+            document.getElementById('porDescansar').textContent = restCount;
+        }
+
+        function calculateAlertsCount() {
+            let total = 0;
+            let porDescansar = 0;
+            
+            usuariosAdmin.forEach(user => {
+                const diasTrabajados = user.diasTrabajadosActuales || 0;
+                
+                if (diasTrabajados >= CONFIG.primerAlerta && diasTrabajados < CONFIG.diasTrabajo) {
+                    total++;
+                }
+                
+                if (diasTrabajados >= CONFIG.primerAlerta) {
+                    porDescansar++;
+                }
+            });
+            
+            return { total, porDescansar };
+        }
+
+        function loadRecentActivity() {
+            const container = document.getElementById('recentActivity');
+            let html = '';
+            
+            // Simular actividad reciente (en un sistema real esto vendría de logs)
+            const activities = [
+                { user: 'usuario1', date: '2026-01-15 08:00', activity: 'Registró ingreso', status: 'success' },
+                { user: 'usuario3', date: '2026-01-15 17:30', activity: 'Registró salida', status: 'success' },
+                { user: 'usuario5', date: '2026-01-15 19:00', activity: 'Turno nocturno iniciado', status: 'warning' },
+                { user: 'usuario8', date: '2026-01-14 07:00', activity: 'Completó período de 15 días', status: 'danger' },
+                { user: 'admin', date: '2026-01-14 10:00', activity: 'Actualizó configuración', status: 'info' }
+            ];
+            
+            activities.forEach(act => {
+                html += `
+                    <tr>
+                        <td><strong>${act.user}</strong></td>
+                        <td>${act.date}</td>
+                        <td>${act.activity}</td>
+                        <td><span class="status-badge status-${act.status}">${act.status}</span></td>
+                    </tr>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // ===== GESTIÓN DE USUARIOS =====
+        function loadUsers() {
+            usuariosAdmin = [];
+            
+            // Cargar usuarios del sistema principal
+            for (let i = 1; i <= 15; i++) {
+                const userKey = `usuario_usuario${i}`;
+                const userData = localStorage.getItem(userKey);
+                
+                if (userData) {
+                    const parsed = JSON.parse(userData);
+                    usuariosAdmin.push({
+                        id: i,
+                        username: `usuario${i}`,
+                        nombre: parsed.nombre || `Vigilante ${i}`,
+                        estado: parsed.estado || 'active',
+                        diasTrabajadosActuales: parsed.diasTrabajadosActuales || 0,
+                        ultimoAcceso: parsed.ultimoAcceso || 'Nunca',
+                        cedula: parsed.cedula || '',
+                        turno: parsed.turno || 'mixto'
+                    });
+                } else {
+                    // Usuario por defecto
+                    usuariosAdmin.push({
+                        id: i,
+                        username: `usuario${i}`,
+                        nombre: `Vigilante ${i}`,
+                        estado: 'active',
+                        diasTrabajadosActuales: Math.floor(Math.random() * 15),
+                        ultimoAcceso: new Date().toLocaleDateString(),
+                        cedula: `${1000000000 + i}`,
+                        turno: i % 2 === 0 ? 'diurno' : 'nocturno'
+                    });
+                }
+            }
+            
+            renderUsersTable();
+        }
+
+        function renderUsersTable() {
+            const container = document.getElementById('usersTable');
+            const startIndex = (currentUserPage - 1) * usersPerPage;
+            const endIndex = startIndex + usersPerPage;
+            const usersToShow = usuariosAdmin.slice(startIndex, endIndex);
+            
+            let html = '';
+            
+            usersToShow.forEach(user => {
+                // Calcular días restantes
+                const diasRestantes = CONFIG.diasTrabajo - user.diasTrabajadosActuales;
+                let estadoClass = 'status-active';
+                let estadoText = 'Activo';
+                
+                if (user.estado === 'inactive') {
+                    estadoClass = 'status-inactive';
+                    estadoText = 'Inactivo';
+                } else if (user.estado === 'descanso') {
+                    estadoClass = 'status-warning';
+                    estadoText = 'Descanso';
+                } else if (diasRestantes <= 3 && diasRestantes > 0) {
+                    estadoClass = 'status-warning';
+                    estadoText = `Por descansar (${diasRestantes}d)`;
+                } else if (diasRestantes <= 0) {
+                    estadoClass = 'status-alert';
+                    estadoText = '¡Debe descansar!';
+                }
+                
+                html += `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td><strong>${user.username}</strong></td>
+                        <td>${user.nombre}</td>
+                        <td><span class="status-badge ${estadoClass}">${estadoText}</span></td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <span class="day-counter ${getDayCounterClass(user.diasTrabajadosActuales)}">
+                                    ${user.diasTrabajadosActuales}
+                                </span>
+                                / ${CONFIG.diasTrabajo} días
+                            </div>
+                        </td>
+                        <td>${user.ultimoAcceso}</td>
+                        <td>
+                            <button class="action-btn btn-edit" onclick="openUserModal(${user.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn btn-view" onclick="viewUserDetails(${user.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn btn-danger" onclick="deleteUser(${user.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            container.innerHTML = html;
+            renderPagination('usersPagination', usuariosAdmin.length, usersPerPage, currentUserPage, changeUserPage);
+        }
+
+        function getDayCounterClass(dias) {
+            if (dias >= CONFIG.alertaCritica) return 'danger';
+            if (dias >= CONFIG.primerAlerta) return 'warning';
+            return '';
+        }
+
+        function changeUserPage(page) {
+            currentUserPage = page;
+            renderUsersTable();
+        }
+
+        function searchUsers() {
+            const searchTerm = document.getElementById('searchUser').value.toLowerCase();
+            const filtered = usuariosAdmin.filter(user => 
+                user.username.toLowerCase().includes(searchTerm) ||
+                user.nombre.toLowerCase().includes(searchTerm)
+            );
+            renderFilteredUsers(filtered);
+        }
+
+        function filterUsers() {
+            const filter = document.getElementById('filterStatus').value;
+            if (!filter) {
+                renderUsersTable();
+                return;
+            }
+            
+            const filtered = usuariosAdmin.filter(user => user.estado === filter);
+            renderFilteredUsers(filtered);
+        }
+
+        function renderFilteredUsers(filteredUsers) {
+            const container = document.getElementById('usersTable');
+            let html = '';
+            
+            filteredUsers.forEach(user => {
+                const diasRestantes = CONFIG.diasTrabajo - user.diasTrabajadosActuales;
+                let estadoClass = 'status-active';
+                let estadoText = 'Activo';
+                
+                if (user.estado === 'inactive') {
+                    estadoClass = 'status-inactive';
+                    estadoText = 'Inactivo';
+                } else if (user.estado === 'descanso') {
+                    estadoClass = 'status-warning';
+                    estadoText = 'Descanso';
+                } else if (diasRestantes <= 3 && diasRestantes > 0) {
+                    estadoClass = 'status-warning';
+                    estadoText = `Por descansar (${diasRestantes}d)`;
+                }
+                
+                html += `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td><strong>${user.username}</strong></td>
+                        <td>${user.nombre}</td>
+                        <td><span class="status-badge ${estadoClass}">${estadoText}</span></td>
+                        <td>${user.diasTrabajadosActuales} / ${CONFIG.diasTrabajo} días</td>
+                        <td>${user.ultimoAcceso}</td>
+                        <td>
+                            <button class="action-btn btn-edit" onclick="openUserModal(${user.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn btn-view" onclick="viewUserDetails(${user.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            container.innerHTML = html;
+            document.getElementById('usersPagination').innerHTML = '';
+        }
+
+        function openUserModal(userId) {
+            editingUserId = userId;
+            const modal = document.getElementById('userModal');
+            
+            if (userId) {
+                // Editar usuario existente
+                const user = usuariosAdmin.find(u => u.id === userId);
+                document.getElementById('modalUserTitle').textContent = 'Editar Usuario';
+                document.getElementById('modalUsername').value = user.username;
+                document.getElementById('modalPassword').value = ''; // No mostrar contraseña
+                document.getElementById('modalFullName').value = user.nombre;
+                document.getElementById('modalCedula').value = user.cedula;
+                document.getElementById('modalTurno').value = user.turno;
+                document.getElementById('modalEstado').value = user.estado;
+                document.getElementById('modalDiasTrabajados').value = user.diasTrabajadosActuales;
+                
+                // Deshabilitar edición de username
+                document.getElementById('modalUsername').disabled = true;
+            } else {
+                // Nuevo usuario
+                document.getElementById('modalUserTitle').textContent = 'Nuevo Usuario';
+                document.getElementById('modalUsername').value = '';
+                document.getElementById('modalPassword').value = '';
+                document.getElementById('modalFullName').value = '';
+                document.getElementById('modalCedula').value = '';
+                document.getElementById('modalTurno').value = 'mixto';
+                document.getElementById('modalEstado').value = 'active';
+                document.getElementById('modalDiasTrabajados').value = 0;
+                
+                // Habilitar edición de username
+                document.getElementById('modalUsername').disabled = false;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('active');
+            editingUserId = null;
+        }
+
+        function saveUser() {
+            const username = document.getElementById('modalUsername').value;
+            const password = document.getElementById('modalPassword').value;
+            const fullName = document.getElementById('modalFullName').value;
+            const cedula = document.getElementById('modalCedula').value;
+            const turno = document.getElementById('modalTurno').value;
+            const estado = document.getElementById('modalEstado').value;
+            const diasTrabajados = parseInt(document.getElementById('modalDiasTrabajados').value);
+            
+            if (!username || (!password && !editingUserId)) {
+                alert('Por favor completa todos los campos obligatorios');
+                return;
+            }
+            
+            if (editingUserId) {
+                // Actualizar usuario existente
+                const userIndex = usuariosAdmin.findIndex(u => u.id === editingUserId);
+                if (userIndex !== -1) {
+                    usuariosAdmin[userIndex] = {
+                        ...usuariosAdmin[userIndex],
+                        nombre: fullName,
+                        cedula: cedula,
+                        turno: turno,
+                        estado: estado,
+                        diasTrabajadosActuales: diasTrabajados
+                    };
+                    
+                    // Guardar en localStorage
+                    const userKey = `usuario_${username}`;
+                    const existingData = JSON.parse(localStorage.getItem(userKey) || '{}');
+                    localStorage.setItem(userKey, JSON.stringify({
+                        ...existingData,
+                        nombre: fullName,
+                        cedula: cedula,
+                        turno: turno,
+                        estado: estado,
+                        diasTrabajadosActuales: diasTrabajados,
+                        ultimoAcceso: new Date().toLocaleDateString()
+                    }));
+                }
+            } else {
+                // Crear nuevo usuario
+                const newId = usuariosAdmin.length + 1;
+                const newUser = {
+                    id: newId,
+                    username: username,
+                    nombre: fullName,
+                    cedula: cedula,
+                    turno: turno,
+                    estado: estado,
+                    diasTrabajadosActuales: diasTrabajados,
+                    ultimoAcceso: new Date().toLocaleDateString()
+                };
+                
+                usuariosAdmin.push(newUser);
+                
+                // Guardar en localStorage del sistema principal
+                localStorage.setItem(`usuario_${username}`, JSON.stringify({
+                    nombre: fullName,
+                    cedula: cedula,
+                    turno: turno,
+                    estado: estado,
+                    diasTrabajadosActuales: diasTrabajados,
+                    planillas: []
+                }));
+                
+                // Actualizar usuariosDB en el sistema principal
+                const mainSystemData = localStorage.getItem('usuariosDB');
+                if (mainSystemData) {
+                    const usersDB = JSON.parse(mainSystemData);
+                    usersDB[username] = password || 'contraseña' + newId;
+                    localStorage.setItem('usuariosDB', JSON.stringify(usersDB));
+                }
+            }
+            
+            closeUserModal();
+            loadUsers();
+            loadDashboardStats();
+            alert('✅ Usuario guardado correctamente');
+        }
+
+        function deleteUser(userId) {
+            if (!confirm('¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.')) {
+                return;
+            }
+            
+            const user = usuariosAdmin.find(u => u.id === userId);
+            if (user) {
+                // Eliminar del array
+                usuariosAdmin = usuariosAdmin.filter(u => u.id !== userId);
+                
+                // Eliminar de localStorage
+                localStorage.removeItem(`usuario_${user.username}`);
+                
+                loadUsers();
+                loadDashboardStats();
+                alert('✅ Usuario eliminado correctamente');
+            }
+        }
+
+        function viewUserDetails(userId) {
+            const user = usuariosAdmin.find(u => u.id === userId);
+            if (user) {
+                alert(`Detalles del usuario:\n\n` +
+                      `Usuario: ${user.username}\n` +
+                      `Nombre: ${user.nombre}\n` +
+                      `Cédula: ${user.cedula}\n` +
+                      `Turno: ${user.turno}\n` +
+                      `Estado: ${user.estado}\n` +
+                      `Días trabajados: ${user.diasTrabajadosActuales}/${CONFIG.diasTrabajo}\n` +
+                      `Último acceso: ${user.ultimoAcceso}`);
+            }
+        }
+
+        // ===== GESTIÓN DE PLANILLAS =====
+        function loadAllPlanillas() {
+            const container = document.getElementById('planillasTable');
+            let allPlanillas = [];
+            
+            // Recolectar todas las planillas de todos los usuarios
+            usuariosAdmin.forEach(user => {
+                const userKey = `usuario_${user.username}`;
+                const userData = localStorage.getItem(userKey);
+                
+                if (userData) {
+                    const parsed = JSON.parse(userData);
+                    if (parsed.planillas && parsed.planillas.length > 0) {
+                        parsed.planillas.forEach(planilla => {
+                            // Calcular días registrados y horas totales
+                            let diasRegistrados = 0;
+                            let horasTotales = 0;
+                            
+                            if (planilla.registros) {
+                                planilla.registros.forEach(registro => {
+                                    if (registro.ingreso && registro.salida) {
+                                        diasRegistrados++;
+                                        horasTotales += registro.horas || 0;
+                                    }
+                                });
+                            }
+                            
+                            allPlanillas.push({
+                                usuario: user.username,
+                                nombre: user.nombre,
+                                mes: planilla.mes,
+                                cliente: planilla.cliente || 'Sin cliente',
+                                diasRegistrados: diasRegistrados,
+                                horasTotales: horasTotales,
+                                registros: planilla.registros || []
+                            });
+                        });
+                    }
+                }
+            });
+            
+            renderPlanillasTable(allPlanillas);
+        }
+
+        function loadPlanillasByMonth() {
+            const mes = document.getElementById('selectMonth').value;
+            const anio = document.getElementById('selectYear').value;
+            const mesKey = `${mes}-${anio}`;
+            
+            const container = document.getElementById('planillasTable');
+            let filteredPlanillas = [];
+            
+            usuariosAdmin.forEach(user => {
+                const userKey = `usuario_${user.username}`;
+                const userData = localStorage.getItem(userKey);
+                
+                if (userData) {
+                    const parsed = JSON.parse(userData);
+                    if (parsed.planillas && parsed.planillas.length > 0) {
+                        parsed.planillas.forEach(planilla => {
+                            if (planilla.mes === mesKey) {
+                                let diasRegistrados = 0;
+                                let horasTotales = 0;
+                                
+                                if (planilla.registros) {
+                                    planilla.registros.forEach(registro => {
+                                        if (registro.ingreso && registro.salida) {
+                                            diasRegistrados++;
+                                            horasTotales += registro.horas || 0;
+                                        }
+                                    });
+                                }
+                                
+                                filteredPlanillas.push({
+                                    usuario: user.username,
+                                    nombre: user.nombre,
+                                    mes: planilla.mes,
+                                    cliente: planilla.cliente || 'Sin cliente',
+                                    diasRegistrados: diasRegistrados,
+                                    horasTotales: horasTotales,
+                                    registros: planilla.registros || []
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+            
+            renderPlanillasTable(filteredPlanillas);
+        }
+
+        function loadUsersForFilter() {
+            const select = document.getElementById('selectUser');
+            let html = '<option value="">Seleccionar usuario</option>';
+            
+            usuariosAdmin.forEach(user => {
+                html += `<option value="${user.username}">${user.nombre} (${user.username})</option>`;
+            });
+            
+            select.innerHTML = html;
+        }
+
+        function loadPlanillasByUser() {
+            const username = document.getElementById('selectUser').value;
+            if (!username) return;
+            
+            const container = document.getElementById('planillasTable');
+            let filteredPlanillas = [];
+            
+            const userData = localStorage.getItem(`usuario_${username}`);
+            if (userData) {
+                const parsed = JSON.parse(userData);
+                const user = usuariosAdmin.find(u => u.username === username);
+                
+                if (parsed.planillas && parsed.planillas.length > 0) {
+                    parsed.planillas.forEach(planilla => {
+                        let diasRegistrados = 0;
+                        let horasTotales = 0;
+                        
+                        if (planilla.registros) {
+                            planilla.registros.forEach(registro => {
+                                if (registro.ingreso && registro.salida) {
+                                    diasRegistrados++;
+                                    horasTotales += registro.horas || 0;
+                                }
+                            });
+                        }
+                        
+                        filteredPlanillas.push({
+                            usuario: username,
+                            nombre: user ? user.nombre : username,
+                            mes: planilla.mes,
+                            cliente: planilla.cliente || 'Sin cliente',
+                            diasRegistrados: diasRegistrados,
+                            horasTotales: horasTotales,
+                            registros: planilla.registros || []
+                        });
+                    });
+                }
+            }
+            
+            renderPlanillasTable(filteredPlanillas);
+        }
+
+        function renderPlanillasTable(planillas) {
+            const container = document.getElementById('planillasTable');
+            const startIndex = (currentPlanillaPage - 1) * planillasPerPage;
+            const endIndex = startIndex + planillasPerPage;
+            const planillasToShow = planillas.slice(startIndex, endIndex);
+            
+            let html = '';
+            
+            if (planillasToShow.length === 0) {
+                html = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #666;">
+                            <i class="fas fa-file-alt" style="font-size: 48px; margin-bottom: 15px; display: block; color: #ddd;"></i>
+                            No hay planillas disponibles
+                        </td>
+                    </tr>
+                `;
+            } else {
+                planillasToShow.forEach(planilla => {
+                    const [mesNum, anio] = planilla.mes.split('-');
+                    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                                  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                    const mesNombre = meses[parseInt(mesNum) - 1];
+                    
+                    let estadoClass = 'status-active';
+                    let estadoText = 'Completa';
+                    
+                    if (planilla.diasRegistrados === 0) {
+                        estadoClass = 'status-inactive';
+                        estadoText = 'Sin registros';
+                    } else if (planilla.diasRegistrados < 15) {
+                        estadoClass = 'status-warning';
+                        estadoText = 'Incompleta';
+                    }
+                    
+                    html += `
+                        <tr>
+                            <td>
+                                <strong>${planilla.nombre}</strong><br>
+                                <small style="color: #666;">${planilla.usuario}</small>
+                            </td>
+                            <td>
+                                <strong>${mesNombre} ${anio}</strong><br>
+                                <small>${planilla.diasRegistrados} días</small>
+                            </td>
+                            <td>${planilla.cliente}</td>
+                            <td>${planilla.diasRegistrados}</td>
+                            <td><strong>${planilla.horasTotales}h</strong></td>
+                            <td><span class="status-badge ${estadoClass}">${estadoText}</span></td>
+                            <td>
+                                <button class="action-btn btn-view" onclick="viewPlanillaDetails('${planilla.usuario}', '${planilla.mes}')">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                                <button class="action-btn btn-edit" onclick="editPlanilla('${planilla.usuario}', '${planilla.mes}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            container.innerHTML = html;
+            renderPagination('planillasPagination', planillas.length, planillasPerPage, currentPlanillaPage, changePlanillaPage);
+        }
+
+        function changePlanillaPage(page) {
+            currentPlanillaPage = page;
+            // Recargar según el tab activo
+            const activeTab = document.querySelector('.tab.active').textContent;
+            if (activeTab.includes('Mes')) {
+                loadPlanillasByMonth();
+            } else if (activeTab.includes('Usuario')) {
+                loadPlanillasByUser();
+            } else {
+                loadAllPlanillas();
+            }
+        }
+
+        function viewPlanillaDetails(username, mesKey) {
+            const userData = localStorage.getItem(`usuario_${username}`);
+            if (!userData) return;
+            
+            const parsed = JSON.parse(userData);
+            const planilla = parsed.planillas.find(p => p.mes === mesKey);
+            const user = usuariosAdmin.find(u => u.username === username);
+            
+            if (!planilla) return;
+            
+            const [mesNum, anio] = mesKey.split('-');
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const mesNombre = meses[parseInt(mesNum) - 1];
+            
+            let detallesHTML = `
+                <div style="margin-bottom: 25px;">
+                    <h3 style="color: var(--primary); margin-bottom: 10px;">
+                        Planilla de ${user ? user.nombre : username}
+                    </h3>
+                    <p style="color: #666;">
+                        ${mesNombre} ${anio} - Cliente: ${planilla.cliente || 'No especificado'}
+                    </p>
+                </div>
+                
+                <div class="table-container" style="margin-bottom: 20px;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Día</th>
+                                <th>Fecha Ingreso</th>
+                                <th>Ingreso</th>
+                                <th>Fecha Salida</th>
+                                <th>Salida</th>
+                                <th>Horas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            if (planilla.registros && planilla.registros.length > 0) {
+                const registrosOrdenados = [...planilla.registros].sort((a, b) => a.dia - b.dia);
+                let totalHoras = 0;
+                
+                registrosOrdenados.forEach(registro => {
+                    if (registro.ingreso && registro.salida) {
+                        const horas = registro.horas || 0;
+                        totalHoras += horas;
+                        
+                        detallesHTML += `
+                            <tr>
+                                <td><strong>${registro.dia}</strong></td>
+                                <td>${formatDate(registro.fecha_ingreso)}</td>
+                                <td style="color: var(--success); font-weight: 600;">${registro.ingreso}</td>
+                                <td>${formatDate(registro.fecha_salida)}</td>
+                                <td style="color: var(--danger); font-weight: 600;">${registro.salida}</td>
+                                <td><strong>${horas}h</strong></td>
+                            </tr>
+                        `;
+                    }
+                });
+                
+                detallesHTML += `
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="padding: 20px; background: #f8f9fa; border-radius: var(--border-radius); text-align: center;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">Resumen</h4>
+                    <div style="display: flex; justify-content: space-around;">
+                        <div>
+                            <div style="font-size: 12px; color: #666;">Días Trabajados</div>
+                            <div style="font-size: 24px; font-weight: 700;">${planilla.registros.filter(r => r.ingreso && r.salida).length}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: #666;">Horas Totales</div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--primary);">${totalHoras}h</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: #666;">Promedio Diario</div>
+                            <div style="font-size: 24px; font-weight: 700;">
+                                ${(totalHoras / planilla.registros.filter(r => r.ingreso && r.salida).length || 0).toFixed(1)}h
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            } else {
+                detallesHTML += `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px; color: #666;">
+                                    No hay registros en esta planilla
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                `;
+            }
+            
+            document.getElementById('modalPlanillaTitle').textContent = `Planilla de ${username}`;
+            document.getElementById('planillaDetailContent').innerHTML = detallesHTML;
+            document.getElementById('planillaDetailModal').classList.add('active');
+        }
+
+        function closePlanillaModal() {
+            document.getElementById('planillaDetailModal').classList.remove('active');
+        }
+
+        function editPlanilla(username, mesKey) {
+            // En un sistema real, esto abriría un editor de planillas
+            alert(`Función de edición de planilla para ${username} - ${mesKey}\n\nEsta función está en desarrollo.`);
+        }
+
+        function printPlanilla() {
+            window.print();
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const [year, month, day] = dateStr.split('-');
+            return `${day}/${month}`;
+        }
+
+        // ===== SISTEMA DE ALERTAS DE DESCANSO =====
+        function loadRestAlerts() {
+            loadAlertsList();
+            loadRestUsersTable();
+        }
+
+        function loadAlertsList() {
+            const container = document.getElementById('alertsList');
+            let html = '';
+            
+            // Filtrar usuarios que necesitan alertas
+            const usersWithAlerts = usuariosAdmin.filter(user => {
+                const diasTrabajados = user.diasTrabajadosActuales || 0;
+                return diasTrabajados >= CONFIG.primerAlerta && diasTrabajados < CONFIG.diasTrabajo;
+            });
+            
+            if (usersWithAlerts.length === 0) {
+                html = `
+                    <div class="alert-card warning">
+                        <div class="alert-info">
+                            <h4>Sin alertas activas</h4>
+                            <p>Todos los vigilantes están dentro de su período normal de trabajo</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                usersWithAlerts.forEach(user => {
+                    const diasTrabajados = user.diasTrabajadosActuales || 0;
+                    const diasRestantes = CONFIG.diasTrabajo - diasTrabajados;
+                    
+                    let alertType = 'warning';
+                    let alertTitle = `Alerta para ${user.nombre}`;
+                    let alertMessage = '';
+                    
+                    if (diasTrabajados >= CONFIG.alertaCritica) {
+                        alertType = 'danger';
+                        alertTitle = `¡ATENCIÓN! ${user.nombre}`;
+                        alertMessage = `ÚLTIMO DÍA DE TRABAJO - Mañana debe salir a descansar por ${CONFIG.diasDescanso} días`;
+                    } else if (diasTrabajados >= CONFIG.primerAlerta + 1) {
+                        alertType = 'warning';
+                        alertMessage = `Quedan ${diasRestantes} días para que salga a descansar`;
+                    } else if (diasTrabajados >= CONFIG.primerAlerta) {
+                        alertType = 'warning';
+                        alertMessage = `Primera alerta: Quedan ${diasRestantes} días para descanso`;
+                    }
+                    
+                    html += `
+                        <div class="alert-card ${alertType}">
+                            <div class="alert-info">
+                                <h4>${alertTitle}</h4>
+                                <p>${alertMessage} - Días trabajados: ${diasTrabajados}/${CONFIG.diasTrabajo}</p>
+                            </div>
+                            <div class="alert-actions">
+                                <button class="action-btn btn-view" onclick="notifyUser('${user.username}')">
+                                    <i class="fas fa-bell"></i> Notificar
+                                </button>
+                                <button class="action-btn btn-edit" onclick="openUserModal(${user.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            container.innerHTML = html;
+            
+            // Actualizar badge
+            const alertCount = calculateAlertsCount();
+            document.getElementById('alertBadge').textContent = alertCount.total;
+        }
+
+        function loadRestUsersTable() {
+            const container = document.getElementById('restUsersTable');
+            
+            // Filtrar usuarios que están cerca de descansar
+            const usersNearRest = usuariosAdmin.filter(user => {
+                const diasTrabajados = user.diasTrabajadosActuales || 0;
+                return diasTrabajados >= CONFIG.primerAlerta;
+            }).sort((a, b) => (b.diasTrabajadosActuales || 0) - (a.diasTrabajadosActuales || 0));
+            
+            let html = '';
+            
+            if (usersNearRest.length === 0) {
+                html = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #666;">
+                            No hay vigilantes cerca del período de descanso
+                        </td>
+                    </tr>
+                `;
+            } else {
+                usersNearRest.forEach(user => {
+                    const diasTrabajados = user.diasTrabajadosActuales || 0;
+                    const diasRestantes = CONFIG.diasTrabajo - diasTrabajados;
+                    
+                    let estadoClass = 'status-warning';
+                    let estadoText = `Por descansar (${diasRestantes}d)`;
+                    
+                    if (diasTrabajados >= CONFIG.diasTrabajo) {
+                        estadoClass = 'status-alert';
+                        estadoText = '¡DEBE DESCANSAR!';
+                    } else if (diasTrabajados >= CONFIG.alertaCritica) {
+                        estadoClass = 'status-alert';
+                        estadoText = 'Último día de trabajo';
+                    }
+                    
+                    // Calcular fecha estimada de descanso
+                    const descansoDate = new Date();
+                    descansoDate.setDate(descansoDate.getDate() + diasRestantes);
+                    const descansoStr = descansoDate.toLocaleDateString();
+                    
+                    html += `
+                        <tr>
+                            <td>
+                                <strong>${user.nombre}</strong><br>
+                                <small style="color: #666;">${user.username}</small>
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <span class="day-counter ${getDayCounterClass(diasTrabajados)}">
+                                        ${diasTrabajados}
+                                    </span>
+                                    / ${CONFIG.diasTrabajo} días
+                                </div>
+                            </td>
+                            <td>
+                                <strong>${diasRestantes} días</strong><br>
+                                <small>Descansa: ${descansoStr}</small>
+                            </td>
+                            <td>${user.ultimoAcceso}</td>
+                            <td><span class="status-badge ${estadoClass}">${estadoText}</span></td>
+                            <td>
+                                <button class="action-btn btn-warning" onclick="forceRest('${user.username}')">
+                                    <i class="fas fa-bed"></i> Forzar Descanso
+                                </button>
+                                <button class="action-btn btn-view" onclick="viewUserPlanillas('${user.username}')">
+                                    <i class="fas fa-file-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function notifyUser(username) {
+            const user = usuariosAdmin.find(u => u.username === username);
+            if (user) {
+                alert(`Notificación enviada a ${user.nombre}\n\nSe ha enviado una alerta para recordarle su próximo período de descanso.`);
+                
+                // Registrar la notificación
+                const notifications = JSON.parse(localStorage.getItem('adminNotifications') || '[]');
+                notifications.push({
+                    user: username,
+                    date: new Date().toISOString(),
+                    type: 'rest_alert',
+                    message: `Alerta de descanso enviada a ${user.nombre}`
+                });
+                localStorage.setItem('adminNotifications', JSON.stringify(notifications));
+            }
+        }
+
+        function forceRest(username) {
+            if (!confirm(`¿Forzar descanso para ${username}?\n\nEsto reseteará sus días trabajados a 0 y cambiará su estado a "En descanso".`)) {
+                return;
+            }
+            
+            const userData = localStorage.getItem(`usuario_${username}`);
+            if (userData) {
+                const parsed = JSON.parse(userData);
+                parsed.diasTrabajadosActuales = 0;
+                parsed.estado = 'descanso';
+                parsed.ultimoAcceso = new Date().toLocaleDateString();
+                
+                localStorage.setItem(`usuario_${username}`, JSON.stringify(parsed));
+                
+                alert(`✅ ${username} ha sido puesto en período de descanso.\n\nDías trabajados reseteados a 0.`);
+                
+                // Recargar datos
+                loadAllData();
+            }
+        }
+
+        function viewUserPlanillas(username) {
+            // Cambiar a pestaña de planillas y filtrar por usuario
+            showSection('planillas');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[onclick="changePlanillaTab(\'usuario\')"]').classList.add('active');
+            
+            document.getElementById('monthFilter').style.display = 'none';
+            document.getElementById('userFilter').style.display = 'block';
+            
+            // Seleccionar el usuario en el filtro
+            setTimeout(() => {
+                document.getElementById('selectUser').value = username;
+                loadPlanillasByUser();
+            }, 100);
+        }
+
+        function generateRestReport() {
+            // En un sistema real, esto generaría un PDF
+            let report = 'REPORTE DE DESCANSOS - BRAND SEGURIDAD LTDA.\n';
+            report += '=============================================\n\n';
+            report += `Fecha: ${new Date().toLocaleDateString()}\n`;
+            report += `Período de trabajo: ${CONFIG.diasTrabajo} días\n`;
+            report += `Período de descanso: ${CONFIG.diasDescanso} días\n\n`;
+            
+            report += 'VIGILANTES POR DESCANSAR:\n';
+            report += '-------------------------\n';
+            
+            usuariosAdmin.forEach(user => {
+                const diasTrabajados = user.diasTrabajadosActuales || 0;
+                if (diasTrabajados >= CONFIG.primerAlerta) {
+                    const diasRestantes = CONFIG.diasTrabajo - diasTrabajados;
+                    report += `${user.nombre} (${user.username}): ${diasTrabajados}/${CONFIG.diasTrabajo} días - `;
+                    
+                    if (diasRestantes <= 0) {
+                        report += '¡DEBE DESCANSAR YA!\n';
+                    } else if (diasRestantes <= 2) {
+                        report += `Descansa en ${diasRestantes} días\n`;
+                    } else {
+                        report += `Descansa en ${diasRestantes} días\n`;
+                    }
+                }
+            });
+            
+            report += '\nVIGILANTES EN DESCANSO:\n';
+            report += '----------------------\n';
+            
+            const usersOnBreak = usuariosAdmin.filter(user => user.estado === 'descanso');
+            if (usersOnBreak.length > 0) {
+                usersOnBreak.forEach(user => {
+                    report += `${user.nombre} (${user.username}) - En descanso\n`;
+                });
+            } else {
+                report += 'Ningún vigilante en descanso actualmente\n';
+            }
+            
+            // Mostrar reporte
+            const reportWindow = window.open('', '_blank');
+            reportWindow.document.write(`<pre>${report}</pre>`);
+            reportWindow.document.close();
+            
+            alert('✅ Reporte generado correctamente\n\nSe ha abierto en una nueva ventana.');
+        }
+
+        // ===== FUNCIONES UTILITARIAS =====
+        function renderPagination(containerId, totalItems, itemsPerPage, currentPage, onChange) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const container = document.getElementById(containerId);
+            
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // Botón anterior
+            html += `<button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&laquo;</button>`;
+            
+            // Páginas
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    html += `<span style="padding: 8px 16px;">...</span>`;
+                }
+            }
+            
+            // Botón siguiente
+            html += `<button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>&raquo;</button>`;
+            
+            container.innerHTML = html;
+            
+            function changePage(page) {
+                if (page >= 1 && page <= totalPages && page !== currentPage) {
+                    onChange(page);
+                }
+            }
+        }
+
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.style.display = 'block';
+            element.style.background = type === 'success' ? '#d4edda' : '#f8d7da';
+            element.style.color = type === 'success' ? '#155724' : '#721c24';
+            element.style.border = type === 'success' ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
+            
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
